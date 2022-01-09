@@ -2,6 +2,11 @@ use std::fs::File;
 use std::io::BufReader;
 use rodio::{Decoder, OutputStream, source::Source};
 
+// TODOS:
+// - 'Sample' abstraction
+// - 'Note' abstraction
+// - 'Tuned' trait, to be implemented by a sample when a note has been imposed
+
 pub fn foo() -> () {
     // Get a output stream handle to the default physical sound device
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
