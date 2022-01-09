@@ -1,9 +1,9 @@
 mod sound;
 mod midi;
 
-
 #[cfg(test)]
 mod tests {
+    use super::sound;
     use super::midi;
 
     #[test]
@@ -17,5 +17,11 @@ mod tests {
         let midi_control = midi::read_midi_input();
         println!("Done!!!");
     }
+
+    #[test]
+    fn test_wav_playback() {
+        sound::foo();
+    }
+    
 }
 
