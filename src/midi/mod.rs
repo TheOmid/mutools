@@ -13,13 +13,21 @@ pub fn read_midi_input() {
     }
 }
 
-struct RawMidiFrame<'a> {
+pub struct RawMidiFrame<'a> {
     timestamp: u64,
     message: &'a [u8],
 }
 
 pub trait MidiFrameReceiver {
     fn receive_midi_frame(&self, frame: RawMidiFrame) -> ();
+}
+
+pub struct MidiInputEngine {}
+
+impl MidiFrameReceiver for MidiInputEngine {
+    fn receive_midi_frame(&self, frame: RawMidiFrame) -> () {
+        println!("{}: {:?} (len = {})", frame.timestamp, frame.message, frame.message.len());
+    }
 }
 
 pub fn receive_midi_frames<T> (receiver: T)
@@ -55,7 +63,6 @@ pub fn receive_midi_frames<T> (receiver: T)
     // _conn_in needs to be a named parameter, because it needs to be kept alive until the end of the scope
     let _conn_in = midi_in.connect(in_port, "midir-read-input",
                                             move |stamp, message, _| {
-        println!("{}: {:?} (len = {})", stamp, message, message.len());
         receiver.receive_midi_frame(RawMidiFrame{ timestamp: stamp, message: message.clone() });
     }, ())?;
     

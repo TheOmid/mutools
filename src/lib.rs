@@ -11,10 +11,9 @@ mod tests {
     }
 
     #[test]
-    fn test_example() {
+    fn test_input_stream() {
         let midi_control = midi::read_midi_input();
         println!("Done!!!");
-        assert_eq!(3, 4);
     }
 }
 
