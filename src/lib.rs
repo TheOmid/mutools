@@ -1,4 +1,6 @@
+mod sound;
 mod midi;
+
 
 #[cfg(test)]
 mod tests {
