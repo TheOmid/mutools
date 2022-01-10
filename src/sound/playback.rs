@@ -1,4 +1,7 @@
 use std::io::BufReader;
+use std::{fs::File, io::BufRead};
+
+use rodio::Decoder;
 
 pub trait Stream<T> {
     fn set_frame(_ : i32) -> ();
@@ -7,13 +10,14 @@ pub trait Stream<T> {
     fn get_playback_rate() -> i32;
 }
 
-pub trait Note {
-    fn tone() -> i32;
+pub struct SampleBuffer {
+    decoder: Decoder<File>,
 }
 
-pub trait Sample<T: Stream<U>, U> {
-    fn buffer() -> T;
+pub trait AudioBuffer {
+    fn transform_speed(&self, ratio: f32) -> SampleBuffer;
+    fn transform_pitch(&self, semitones: i32) -> SampleBuffer;
+    fn playback(&self) -> ();
 }
 
-pub trait Sound<T> {
-}
+

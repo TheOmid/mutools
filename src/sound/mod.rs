@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::{fs::File, io::BufRead};
 use std::io::BufReader;
 use rodio::{Decoder, OutputStream, source::Source};
 
@@ -6,6 +6,10 @@ use rodio::{Decoder, OutputStream, source::Source};
 // - 'Sample' abstraction
 // - 'Note' abstraction
 // - 'Tuned' trait, to be implemented by a sample when a note has been imposed
+
+// IMPORTANT
+// - Abstract audio streams out into a single class
+// - The class should store an audio buffer and implement all traits necessary
 
 mod streams;
 pub use streams::*;
@@ -31,17 +35,27 @@ pub fn wav_playback() -> () {
     std::thread::sleep(std::time::Duration::from_secs(5));
 }
 
-fn get_tuned_buffer(file: File) -> BufReader<File> {
+fn get_buffer(file: File) -> BufReader<File> {
     BufReader::new(file)
 }
 
 pub fn artificial_playback() -> () {
     let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
     let file = File::open("/home/axtya/Projects/mutools/bin/FS_001/SYNTH/synth_air_chord.wav").unwrap();
-    let beep1 = stream_handle.play_once(get_tuned_buffer(file)).unwrap();
-    beep1.set_volume(0.9);
-    println!("Started beep1");
-    std::thread::sleep(std::time::Duration::from_millis(1500));
+    let mut source = Decoder::new(get_buffer(file)).unwrap();
+    {
+        let f1 = File::open("/home/axtya/Projects/mutools/bin/FS_001/SYNTH/synth_air_chord.wav").unwrap();
+        let art_src = Decoder::new(get_buffer(f1))
+                    .unwrap()
+                    .buffered();
+                    //.speed(0.8);
+        let sound = stream_handle.play_raw(art_src.clone().convert_samples()).unwrap();
+        println!("Started sound");
+        std::thread::sleep(std::time::Duration::from_millis(1500));
+        for frame in art_src.clone() {
+            println!("playing: {}", frame);
+        }
+    };
 }
 
 
