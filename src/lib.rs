@@ -20,8 +20,8 @@ mod tests {
 
     #[test]
     fn test_wav_playback() {
-        sound::foo();
+        sound::wav_playback();
     }
-    
+
 }
 
