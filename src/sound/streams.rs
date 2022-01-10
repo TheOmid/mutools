@@ -5,7 +5,7 @@ pub struct Note {
     tone: u8,
 }
 
-pub trait AudioStream {
+pub struct MidiStream {
 }
 
 pub struct SampleStream {}
