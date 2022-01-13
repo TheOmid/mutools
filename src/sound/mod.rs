@@ -1,6 +1,6 @@
 use std::{fs::File, io::BufRead};
 use std::io::BufReader;
-use rodio::{Decoder, OutputStream, source::Source};
+use rodio::{Decoder, OutputStream, OutputStreamHandle, source::Source};
 
 // TODOS:
 // - 'Sample' abstraction
@@ -16,6 +16,38 @@ pub use streams::*;
 
 mod playback;
 pub use playback::*;
+
+pub struct Sound {
+    source: BufReader<File>,
+}
+
+impl Sound {
+    pub fn from_filename(filename: String) -> Sound {
+        Sound {
+            source: BufReader::new(
+                            File::open(filename)
+                            .expect("Could not open file!")
+                        ),
+        }
+    }
+
+    pub fn wait_play(self, millis: u64) -> () {
+        let (_stream, stream_handle) = OutputStream::try_default()
+            .expect("Failed to acquire stream handle!");
+        let converted_samples = {
+             Decoder::new(self.source)
+                .expect("Failed to decode source!")
+                .convert_samples()
+        };
+        stream_handle.play_raw(converted_samples)
+            .expect("Error why trying to play sound!");
+        std::thread::sleep(std::time::Duration::from_millis(millis));
+    }
+
+    pub fn repitch(&mut self, pitch_factor: i8) -> () {
+        
+    }
+}
 
 pub fn wav_playback() -> () {
     // Get a output stream handle to the default physical sound device
