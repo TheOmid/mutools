@@ -1,9 +1,14 @@
+use std::borrow::{Borrow, BorrowMut};
+use std::vec::IntoIter;
 use std::{fs::File, io::BufRead};
 use std::time::Duration;
 use std::io::{BufReader, Read, Cursor};
+use std::iter::{Iterator, Cloned};
+use rodio::buffer::SamplesBuffer;
+use rodio::static_buffer::StaticSamplesBuffer;
 use rodio::{Sample, Decoder, OutputStream, OutputStreamHandle, source::Source};
 use byteorder::{ByteOrder, LittleEndian, ReadBytesExt, BigEndian}; // 1.3.4
-use rodio::source::{SineWave};
+use rodio::source::{SineWave, Buffered};
 
 // TODOS:
 // - 'Sample' abstraction
@@ -21,9 +26,85 @@ mod playback;
 pub use playback::*;
 
 
-pub struct Sound {
-    source: ,
+
+pub struct SoundBuffer<'a> {
+    src: &'a SamplesBuffer<f32>,
 }
+
+
+impl<'a> SoundBuffer<'a> {
+
+    pub fn from_f32_vec(vec: Vec<f32>) -> SoundBuffer<'a> {
+        SoundBuffer {
+            src: &SamplesBuffer::<f32>::new(1, 44100, vec.clone()),
+        }
+    }
+
+    pub fn from_sample_vec<T: Sample>(vec: Vec<T>) -> SoundBuffer<'a> {
+        let mut formatted_vec : Vec<f32> = Vec::new();
+        for v in vec {
+            formatted_vec.push(f32::from(v.to_f32()));
+        }
+        SoundBuffer::from_f32_vec(formatted_vec)
+    }
+
+    pub fn from_filename(filename: String) -> SoundBuffer<'a> {
+        let file = BufReader::new(File::open("examples/music.ogg").unwrap());
+        let source = Decoder::new(file).unwrap();
+        let src_vec = Vec::<i16>::from_iter(source.buffered());
+        SoundBuffer::from_sample_vec(src_vec)
+    }
+
+    pub fn from_frequency(freq: u32) -> SoundBuffer<'a> {
+        let source = SineWave::new(freq)
+                        .take_duration(Duration::from_secs_f32(0.25));
+        SoundBuffer::from_f32_vec(Vec::<f32>::from_iter(source.buffered()))
+    }
+
+    pub fn clone(self) -> SoundBuffer<'a> {
+        let mut temp_buf : Vec<f32> = Vec::new();
+        let src = self.get_source().clone();
+        let nsrc = Vec::<f32>::new();
+        for v in src.into_iter() {
+
+        }
+        SoundBuffer::from_f32_vec(nsrc)
+    }
+
+    fn get_source(&self) -> &'a SamplesBuffer<f32> {
+        self.src
+    }
+
+    fn get_source_clone(self) -> SamplesBuffer<f32> {
+        let buf_vec = Vec::<f32>::new();
+        for (i, v) in self.src.enumerate() {
+
+        }
+        let n_sample_buffer = SamplesBuffer::<f32>::new(1, 44100, buf_vec);
+        n_sample_buffer
+    }
+
+    pub fn play(source : &mut SoundBuffer, output_stream: &mut OutputStreamHandle) -> () {
+        let src = source.clone()
+                    .get_source()
+                    .buffered()
+                    .to_owned()
+                    .into_iter();
+        output_stream
+            .play_raw(src)
+            .expect("Error when trying to play SoundBuffer");
+    }
+
+    /*pub fn clone(&mut self) -> Self {
+        let mut src_vec : Vec<f32> = Vec::new();
+        {
+            src_vec = Vec::<f32>::from_iter(&mut self.src.into_iter());
+        }
+        SoundBuffer::from_f32_vec(&src_vec)
+    }*/
+
+}
+
 
 fn reader_to_vec_buffer<T: std::io::Read>(reader: &mut BufReader<T>) -> Vec<u8> {
     let mut buf : Vec<u8> = Vec::new();
@@ -61,38 +142,31 @@ fn unalign_buffer(aligned_buffer: &Vec<u16>) -> Vec<u8> {
     raw_buffer
 }
 
-impl Sound {
+pub struct Sound<'a> {
+    buffer: SoundBuffer<'a>,
+}
 
-    pub fn from(filename: String) -> Sound {
+impl<'a> Sound<'a> {
+
+    pub fn from(filename: String) -> Sound<'a> {
         Sound::from_filename(filename)
     }
 
-    pub fn from_filename(filename: String) -> Sound {
+    pub fn from_filename(filename: String) -> Sound<'a> {
         Sound {
-            source: reader_to_vec_buffer(
-                &mut BufReader::new(File::open(filename).expect("Could not open file!"))
-            ),
+            buffer: SoundBuffer::from_filename(filename),
         }
     }
 
-    pub fn wait_play(&self, millis: u64) -> () {
-        let (_stream, stream_handle) = OutputStream::try_default()
+    pub fn wait_play(&mut self, millis: u64) -> () {
+        let (_stream, mut stream_handle) = OutputStream::try_default()
                                         .expect("Failed to acquire stream handle!");
-        let cursor = Cursor::new( Vec::clone(&self.source));
-        let sink = stream_handle
-                    .play_once(cursor)
-                    .expect("Error while trying to play sound!");
-        sink.play();
+        SoundBuffer::play(&mut self.buffer.clone(), &mut stream_handle);
         std::thread::sleep(std::time::Duration::from_millis(millis));
     }
 
 
     pub fn repitch(&mut self, pitch_factor: u16) -> () {
-        let raw_buffer = &self.source.clone();
-        let mut buf = SineWave::new(440);
-        let nbuf = buf.take_duration(Duration::from_secs_f32(0.25)).amplify(0.20);
-        let buf_iter = ;
-        let raw_buf_iter = raw_buffer.into_iter();
         /*
         let mut aligned_buffer = align_buffer(raw_buffer);
         println!("{:?}", aligned_buffer);
@@ -104,14 +178,6 @@ impl Sound {
         println!("{:?}", new_source);
         self.source = new_source;
         */
-    }
-}
-
-impl Clone for Sound {
-    fn clone(&self) -> Self {
-        Sound {
-            source: self.source.clone(),
-        }
     }
 }
 
