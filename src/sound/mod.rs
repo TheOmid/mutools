@@ -1,6 +1,6 @@
 use std::{fs::File, io::BufRead};
-use std::io::BufReader;
-use rodio::{Decoder, OutputStream, OutputStreamHandle, source::Source};
+use std::io::{BufReader, Read, Cursor};
+use rodio::{Sample, Decoder, OutputStream, OutputStreamHandle, source::Source};
 
 // TODOS:
 // - 'Sample' abstraction
@@ -18,34 +18,52 @@ mod playback;
 pub use playback::*;
 
 pub struct Sound {
-    source: BufReader<File>,
+    source: Vec<u16>,
+}
+
+fn buf_reader_to_vec(reader: &mut BufReader<File>) -> Vec<u16> {
+    let mut buf : Vec<u8> = Vec::new();
+    reader.read_to_end(&mut buf);
+    let mut nbuf : Vec<u16> = Vec::new();
+    nbuf.resize(buf.len(), 0);
+    for i in 0..nbuf.len() {
+        nbuf[i] = u16::from(buf[i])
+    }
+    nbuf
 }
 
 impl Sound {
     pub fn from_filename(filename: String) -> Sound {
         Sound {
-            source: BufReader::new(
-                            File::open(filename)
-                            .expect("Could not open file!")
-                        ),
+            source: buf_reader_to_vec(
+                &mut BufReader::new(File::open(filename).expect("Could not open file!"))
+            ),
         }
     }
 
-    pub fn wait_play(self, millis: u64) -> () {
+    pub fn wait_play(&self, millis: u64) -> () {
         let (_stream, stream_handle) = OutputStream::try_default()
             .expect("Failed to acquire stream handle!");
-        let converted_samples = {
-             Decoder::new(self.source)
-                .expect("Failed to decode source!")
-                .convert_samples()
-        };
-        stream_handle.play_raw(converted_samples)
-            .expect("Error why trying to play sound!");
+
+        let cursor = Cursor::new( Vec::clone(&self.source));
+        let sink = stream_handle.play_once(cursor)
+                    .expect("Error while trying to play sound!");
+        sink.play();
         std::thread::sleep(std::time::Duration::from_millis(millis));
     }
 
-    pub fn repitch(&mut self, pitch_factor: i8) -> () {
-        
+    pub fn repitch(&mut self, pitch_factor: f32) -> () {
+        for i in 0..self.source.len() {
+            Sample::amplify(&mut self.source[i], pitch_factor);
+        }
+    }
+}
+
+impl Clone for Sound {
+    fn clone(&self) -> Self {
+        Sound {
+            source: self.source.clone(),
+        }
     }
 }
 
