@@ -1,8 +1,9 @@
 use std::{fs::File, io::BufRead};
-use pvoc::{PhaseVocoder, Bin};
+use std::time::Duration;
 use std::io::{BufReader, Read, Cursor};
 use rodio::{Sample, Decoder, OutputStream, OutputStreamHandle, source::Source};
 use byteorder::{ByteOrder, LittleEndian, ReadBytesExt, BigEndian}; // 1.3.4
+use rodio::source::{SineWave};
 
 // TODOS:
 // - 'Sample' abstraction
@@ -19,8 +20,9 @@ pub use streams::*;
 mod playback;
 pub use playback::*;
 
+
 pub struct Sound {
-    source: Vec<u8>,
+    source: ,
 }
 
 fn reader_to_vec_buffer<T: std::io::Read>(reader: &mut BufReader<T>) -> Vec<u8> {
@@ -84,8 +86,13 @@ impl Sound {
         std::thread::sleep(std::time::Duration::from_millis(millis));
     }
 
+
     pub fn repitch(&mut self, pitch_factor: u16) -> () {
         let raw_buffer = &self.source.clone();
+        let mut buf = SineWave::new(440);
+        let nbuf = buf.take_duration(Duration::from_secs_f32(0.25)).amplify(0.20);
+        let buf_iter = ;
+        let raw_buf_iter = raw_buffer.into_iter();
         /*
         let mut aligned_buffer = align_buffer(raw_buffer);
         println!("{:?}", aligned_buffer);
