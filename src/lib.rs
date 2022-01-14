@@ -3,8 +3,6 @@ mod midi;
 
 #[cfg(test)]
 mod tests {
-    use crate::sound::wav_playback;
-
     use super::sound;
     use super::midi;
 
@@ -26,8 +24,8 @@ mod tests {
             String::from("/home/axtya/Projects/mutools/bin/FS_001/SYNTH/synth_air_chord.wav")
         );
         snd.wait_play(1500);
-        //snd.repitch(5);
-        //snd.wait_play(1500);
+        snd.repitch(4);
+        snd.wait_play(1500);
     }
 
 }
