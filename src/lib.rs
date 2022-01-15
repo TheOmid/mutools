@@ -19,13 +19,19 @@ mod tests {
     }
 
     #[test]
+    fn test_freq_playback() {
+        let sound_buffer = sound::SoundBuffer::from_frequency(50, 1500);
+        let mut sound = sound::Sound::from(sound_buffer);
+        //sound.wait_play(1500).unwrap();
+    }
+
+    #[test]
     fn test_sound_playback() {
-        let snd = &mut sound::Sound::from_filename(
-            String::from("/home/axtya/Projects/mutools/bin/FS_001/SYNTH/synth_air_chord.wav")
+        let sound_buffer = sound::SoundBuffer::from_filename(
+            String::from("/home/axtya/Projects/mutools/bin/FS_001/BASS/bass_triangle_1.wav")
         );
-        snd.wait_play(1500);
-        snd.repitch(4);
-        snd.wait_play(1500);
+        let mut sound = sound::Sound::from(sound_buffer);
+        sound.wait_play(1500).unwrap();
     }
 
 }
