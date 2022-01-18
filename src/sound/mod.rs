@@ -26,6 +26,34 @@ pub use streams::*;
 mod playback;
 pub use playback::*;
 
+pub struct SampleBuffer {
+    samples: Vec<f32>,
+}
+
+impl<T: Copy> From<&Vec<T>> for SampleBuffer where f32: From<T> {
+    fn from(src: &Vec<T>) -> Self {
+        SampleBuffer {
+            samples: {
+                let mut vec : Vec<f32> = Vec::new();
+                vec.reserve(src.len());
+                for v in src {
+                    let fv : f32 = f32::from(*v);
+                    vec.push(fv);
+                }
+                vec
+            },
+        }
+    }
+}
+
+pub struct PlaybackManager {
+}
+
+impl PlaybackManager {
+
+}
+
+
 const SAMPLE_RATE : u32 = 48000;
 const NUM_CHANNELS : u16 = 2;
 pub struct SoundBuffer {
