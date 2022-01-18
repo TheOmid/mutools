@@ -84,14 +84,6 @@ impl SoundBuffer {
         src.play_on_stream(output_stream)
     }
 
-    /*pub fn clone(&mut self) -> Self {
-        let mut src_vec : Vec<f32> = Vec::new();
-        {
-            src_vec = Vec::<f32>::from_iter(&mut self.src.into_iter());
-        }
-        SoundBuffer::from_f32_vec(&src_vec)
-    }*/
-
 }
 
 
