@@ -1,9 +1,12 @@
 mod sound;
+mod transform;
 mod midi;
 
 #[cfg(test)]
 mod tests {
-    use super::sound;
+    use super::sound::{Sound,
+                       FileDescriptor,
+                       PlaybackManager};
     use super::midi;
 
     #[test]
@@ -13,24 +16,23 @@ mod tests {
         assert_eq!(result, 4);
     }
 
-    /*
-    #[test]
-    fn test_input_stream() {
-        let midi_control = midi::read_midi_input();
-        println!("Done!!!");
-    }
-    */
-
     #[test]
     fn test_sound_playback() {
-        let sound_buffer = sound::SoundBuffer::from_file(sound::FileDescriptor::WavFile(
+        let sound = Sound::from_file(FileDescriptor::WavFile(
             String::from("/home/axtya/Projects/sampler-rs/bin/FS_001/BASS/bass_triangle_1.wav")
         ));
 
-        let player = sound::PlaybackManager::new();
-        player.append(sound_buffer);
+        let player = PlaybackManager::new();
+        player.append(sound.clone_buffer());
         player.play();
     }
 
+    fn test_sound_crop() {
+        let sound = Sound::from_file(FileDescriptor::WavFile(
+            String::from("/home/axtya/Projects/sampler-rs/bin/FS_001/BASS/bass_triangle_1.wav")
+        ));
+        //let transformer = SoundTransformer::from(sound);
+        //transformer.push(transforms::Crop::from(transforms::Crop::ArgsT{std::time::duration....)
+    }
 }
 

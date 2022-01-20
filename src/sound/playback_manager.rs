@@ -1,7 +1,7 @@
-use crate::sound::{SoundBuffer,
-                   OutputStreamHandle,
-                   OutputStream,
-                   Sink};
+
+use crate::sound::SoundBuffer;
+
+use rodio::{OutputStream, OutputStreamHandle, Sink};
 use rodio::buffer::SamplesBuffer;
 
 pub struct PlaybackManager {
