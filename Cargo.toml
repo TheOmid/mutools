@@ -1,5 +1,5 @@
 [package]
-name = "mutools"
+name = "wavsampler"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,5 +8,3 @@ edition = "2021"
 [dependencies]
 midir = "0.7.0"
 rodio = "0.14.0"
-tdpsola = "0.1.0"
-byteorder = "1"
