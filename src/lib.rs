@@ -19,7 +19,7 @@ mod tests {
     #[test]
     fn test_sound_playback() {
         let sound = Sound::from_file(FileDescriptor::WavFile(
-            String::from("/home/axtya/Projects/sampler-rs/bin/FS_001/BASS/bass_triangle_1.wav")
+            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
         ));
 
         let player = PlaybackManager::new();
@@ -29,7 +29,7 @@ mod tests {
 
     fn test_sound_crop() {
         let sound = Sound::from_file(FileDescriptor::WavFile(
-            String::from("/home/axtya/Projects/sampler-rs/bin/FS_001/BASS/bass_triangle_1.wav")
+            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
         ));
         //let transformer = SoundTransformer::from(sound);
         //transformer.push(transforms::Crop::from(transforms::Crop::ArgsT{std::time::duration....)

@@ -34,6 +34,12 @@ impl SoundBuffer {
     const SAMPLE_RATE : u32 = 48000;
     const NUM_CHANNELS : u16 = 2;
 
+    pub fn new() -> Self {
+        SoundBuffer {
+            buffer: Vec::new(),
+        }
+    }
+
     pub fn from_file(file_descriptor: FileDescriptor) -> Self {
         let filename = {
             match file_descriptor {
@@ -51,6 +57,14 @@ impl SoundBuffer {
         SoundBuffer {
             buffer: self.buffer.clone(),
         }
+    }
+
+    pub fn push(&mut self, frame: f32) -> () {
+        self.buffer.push(frame);
+    }
+
+    pub fn get(&self, index: usize) -> f32 {
+        self.buffer[index]
     }
 }
 

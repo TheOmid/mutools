@@ -23,6 +23,12 @@ impl From<SoundBuffer> for Sound {
 }
 
 impl Sound {
+    pub fn new() -> Self {
+        Sound {
+            sound_buffer: SoundBuffer::new(),
+        }
+    }
+
     pub fn from_file(file_descriptor: FileDescriptor) -> Self {
         Sound {
             sound_buffer: SoundBuffer::from_file(file_descriptor),
@@ -35,6 +41,14 @@ impl Sound {
 
     pub fn get_buffer(self) -> SoundBuffer {
         self.sound_buffer
+    }
+
+    pub fn push_frame(&mut self, frame: f32) -> () {
+        self.sound_buffer.push(frame);
+    }
+
+    pub fn get_frame(&self, index: usize) -> f32 {
+        self.sound_buffer.get(index)
     }
 }
 
