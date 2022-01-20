@@ -13,26 +13,23 @@ mod tests {
         assert_eq!(result, 4);
     }
 
+    /*
     #[test]
     fn test_input_stream() {
         let midi_control = midi::read_midi_input();
         println!("Done!!!");
     }
-
-    #[test]
-    fn test_freq_playback() {
-        let sound_buffer = sound::SoundBuffer::from_frequency(50, 1500);
-        let mut sound = sound::Sound::from(sound_buffer);
-        //sound.wait_play(1500).unwrap();
-    }
+    */
 
     #[test]
     fn test_sound_playback() {
-        let sound_buffer = sound::SoundBuffer::from_filename(
-            String::from("/home/axtya/Projects/mutools/bin/FS_001/BASS/bass_triangle_1.wav")
-        );
-        let mut sound = sound::Sound::from(sound_buffer);
-        sound.wait_play(1500).unwrap();
+        let sound_buffer = sound::SoundBuffer::from_file(sound::FileDescriptor::WavFile(
+            String::from("/home/axtya/Projects/sampler-rs/bin/FS_001/BASS/bass_triangle_1.wav")
+        ));
+
+        let player = sound::PlaybackManager::new();
+        player.append(sound_buffer);
+        player.play();
     }
 
 }
