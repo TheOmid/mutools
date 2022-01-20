@@ -15,7 +15,7 @@ impl PlaybackManager {
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         PlaybackManager {
             sink: {
-                let mut sink = Sink::try_new(&stream_handle).unwrap();
+                let sink = Sink::try_new(&stream_handle).unwrap();
                 sink.pause();
                 sink
             },

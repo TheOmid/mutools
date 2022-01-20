@@ -29,16 +29,11 @@ pub enum FileDescriptor {
     WavFile(String),
 }
 
-
-const SAMPLE_RATE : u32 = 48000;
-const NUM_CHANNELS : u16 = 2;
-impl Into<SamplesBuffer<f32>> for SoundBuffer {
-    fn into(self) -> SamplesBuffer<f32> {
-        SamplesBuffer::<f32>::new(NUM_CHANNELS, SAMPLE_RATE, self.buffer.clone())
-    }
-}
-
 impl SoundBuffer {
+
+    const SAMPLE_RATE : u32 = 48000;
+    const NUM_CHANNELS : u16 = 2;
+
     pub fn from_file(file_descriptor: FileDescriptor) -> Self {
         let filename = {
             match file_descriptor {
@@ -57,20 +52,10 @@ impl SoundBuffer {
             buffer: self.buffer.clone(),
         }
     }
-
-    pub fn repitch(&mut self, pitch_factor: u16) -> () {
-        /*
-        let mut aligned_buffer = align_buffer(raw_buffer);
-        println!("{:?}", aligned_buffer);
-        for i in 0..aligned_buffer.len() {
-            aligned_buffer[i] = Sample::amplify(aligned_buffer[i], 0.001);
-            //aligned_buffer[i] = (aligned_buffer[i] / 2);
-        }
-        let new_source = unalign_buffer(&aligned_buffer);
-        println!("{:?}", new_source);
-        self.source = new_source;
-        */
-    }
 }
 
-
+impl Into<SamplesBuffer<f32>> for SoundBuffer {
+    fn into(self) -> SamplesBuffer<f32> {
+        SamplesBuffer::<f32>::new(SoundBuffer::NUM_CHANNELS, SoundBuffer::SAMPLE_RATE, self.buffer.clone())
+    }
+}

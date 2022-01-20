@@ -40,6 +40,7 @@ impl Sound {
 
 impl Clone for Sound {
     fn clone(&self) -> Self {
-        Sound::from(self.sound_buffer)
+        Sound::from(self.clone_buffer())
     }
 }
+
