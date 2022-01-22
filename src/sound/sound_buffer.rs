@@ -39,8 +39,8 @@ pub struct SamplesVector {
 
 impl SamplesVector {
     pub fn new() -> Self {
-        SamplesVec {
-            _buffer: Vec::new(),
+        Self {
+            _buffer: Vec::<SoundSample>::new(),
         }
     }
 
@@ -51,7 +51,7 @@ impl SamplesVector {
         }
     }
 
-    pub fn push(&mut self, sample: SoundSample) -> () {
+    pub fn push_sample(&mut self, sample: SoundSample) -> () {
         &mut self._buffer.push(sample);
     }
 }
@@ -66,7 +66,7 @@ impl Clone for SamplesVector {
 
 impl<T: Into<SoundSample>> From<Vec<T>> for SamplesVector {
     fn from(src: Vec<T>) -> Self {
-        SamplesVec {
+        Self {
             _buffer: src.into_iter()
                      .map(|val| val.into() )
                      .collect(),
@@ -76,11 +76,11 @@ impl<T: Into<SoundSample>> From<Vec<T>> for SamplesVector {
 
 impl<T: Into<SoundSample>> Into<Vec<T>> for SamplesVector {
     fn into(self) -> Vec<T> {
-        self.into
+        self.into()
     }
 }
 
-struct SamplesVectorIterator {
+pub struct SamplesVectorIterator {
     _samples_vector: SamplesVector,
     _index: usize,
 }
@@ -155,8 +155,8 @@ impl SoundBuffer {
         }
     }
 
-    pub fn push(&mut self, frame: f32) -> () {
-        self._buffer.push(SoundSample::from(frame));
+    pub fn push_sample<T: Into<SoundSample>>(&mut self, frame: T) -> () {
+        self._buffer.push_sample(frame.into());
     }
 
     pub fn get_sample(&self, index: usize) -> Option<SoundSample> {

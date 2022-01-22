@@ -1,5 +1,5 @@
 mod sound_buffer;
-pub use sound_buffer::{SoundBuffer, FileDescriptor};
+pub use sound_buffer::{SoundBuffer, SoundSample, SamplesVector, FileDescriptor};
 
 mod playback_manager;
 pub use playback_manager::PlaybackManager;
@@ -37,12 +37,12 @@ impl Sound {
         self.sound_buffer
     }
 
-    pub fn push_frame(&mut self, frame: f32) -> () {
-        self.sound_buffer.push(frame);
+    pub fn push_sample<T: Into<SoundSample>>(&mut self, frame: T) -> () {
+        self.sound_buffer.push_sample(frame);
     }
 
-    pub fn get_frame(&self, index: usize) -> f32 {
-        self.sound_buffer.get(index)
+    pub fn get_sample(&self, index: usize) -> Option<SoundSample> {
+        self.sound_buffer.get_sample(index)
     }
 }
 
