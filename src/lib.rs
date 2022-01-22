@@ -33,6 +33,8 @@ mod tests {
         ));
         //let transformer = SoundTransformer::from(sound);
         //transformer.push(transforms::Crop::from(transforms::Crop::ArgsT{std::time::duration....)
+
+        // Next - Implement SoundTransformer and have it apply a crop transformation to the sound
     }
 }
 
