@@ -68,6 +68,8 @@ impl SoundBuffer {
     }
 }
 
+// impl iterator
+
 impl Into<SamplesBuffer<f32>> for SoundBuffer {
     fn into(self) -> SamplesBuffer<f32> {
         SamplesBuffer::<f32>::new(SoundBuffer::NUM_CHANNELS, SoundBuffer::SAMPLE_RATE, self.buffer.clone())
