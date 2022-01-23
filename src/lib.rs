@@ -36,11 +36,16 @@ mod tests {
         let player = PlaybackManager::new();
 
         let sound = Sound::from_file(FileDescriptor::WavFile(
-            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
+            String::from("./bin/FS_001/BASS/bass_sub_0.wav")
         ));
-        let cropped_sound = CropTransform::transform(&(), sound);
-        player.append(cropped_sound.clone_buffer());
+        let crop_transform = CropTransform::from_start_end(
+                                std::time::Duration::from_millis(500),
+                                std::time::Duration::from_millis(2500),
+                                44100
+                            );
+        let cropped_sound = crop_transform.transform(sound);
 
+        player.append(cropped_sound.clone_buffer());
         player.play()
     }
 }

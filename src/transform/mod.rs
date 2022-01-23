@@ -2,7 +2,7 @@ use crate::sound::Sound;
 
 pub trait SoundTransform {
     type TransformStateT;
-    fn transform(state: &Self::TransformStateT, _: Sound) -> Sound;
+    fn transform(&self, _: Sound) -> Sound;
 }
 
 pub struct SoundTransformer {
