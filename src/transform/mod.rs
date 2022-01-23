@@ -19,4 +19,5 @@ impl From<Sound> for SoundTransformer {
 
 mod crop_transform;
 pub use crop_transform::CropTransform;
+pub use crop_transform::LerpTransform;
 

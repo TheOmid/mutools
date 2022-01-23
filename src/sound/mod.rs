@@ -37,6 +37,10 @@ impl Sound {
         self.sound_buffer
     }
 
+    pub fn len(&self) -> usize {
+        self.sound_buffer.len()
+    }
+
     pub fn push_sample<T: Into<SoundSample>>(&mut self, frame: T) -> () {
         self.sound_buffer.push_sample(frame);
     }

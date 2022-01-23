@@ -44,6 +44,10 @@ impl SamplesVector {
         }
     }
 
+    pub fn len(&self) -> usize {
+        self._buffer.len()
+    }
+
     pub fn get_sample(&self, index: usize) -> Option<SoundSample> {
         match self._buffer.get(index) {
             Some(s) => Some(*s),
@@ -151,6 +155,10 @@ impl SoundBuffer {
         let decoder = Decoder::new(file).unwrap();
         let vec = Vec::<f32>::from_iter(decoder.convert_samples());
         SoundBuffer::from(vec)
+    }
+
+    pub fn len(&self) -> usize {
+        self._buffer.len()
     }
 
     pub fn clone(&self) -> SoundBuffer {
