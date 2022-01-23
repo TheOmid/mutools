@@ -4,11 +4,14 @@ mod midi;
 
 #[cfg(test)]
 mod tests {
+    use crate::transform::{CropTransform, SoundTransform};
+
     use super::sound::{Sound,
                        FileDescriptor,
                        PlaybackManager};
     use super::midi;
 
+    use super::transform::SoundTransformer;
 
     #[test]
     fn it_works() {
@@ -19,24 +22,26 @@ mod tests {
 
     #[test]
     fn test_sound_playback() {
-        let sound = Box::from(Sound::from_file(FileDescriptor::WavFile(
+        let sound = Sound::from_file(FileDescriptor::WavFile(
             String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
-        )));
-        let player = Box::from(PlaybackManager::new());
+        ));
+        let player = PlaybackManager::new();
         let sound_buffer = sound.clone_buffer();
         player.append(sound_buffer);
-        player.play();
+        //player.play();
     }
 
     #[test]
     fn test_sound_crop() {
-        let sound = Box::from(Sound::from_file(FileDescriptor::WavFile(
-            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
-        )));
-        let transformer = SoundTransformer::from(sound);
-        //transformer.push(transforms::Crop::from(transforms::Crop::ArgsT{std::time::duration....)
+        let player = PlaybackManager::new();
 
-        // Next - Implement SoundTransformer and have it apply a crop transformation to the sound
+        let sound = Sound::from_file(FileDescriptor::WavFile(
+            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
+        ));
+        let cropped_sound = CropTransform::transform(&(), sound);
+        player.append(cropped_sound.clone_buffer());
+
+        player.play()
     }
 }
 

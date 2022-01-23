@@ -16,9 +16,10 @@ impl From<Duration> for CropTransform {
 }
 
 impl SoundTransform for CropTransform {
-    fn transform(input_sound: Sound) -> Sound {
-        let start_frame = 0;
-        let end_frame = 0;
+    type TransformStateT = ();
+    fn transform(state: &Self::TransformStateT, input_sound: Sound) -> Sound {
+        let start_frame = 3000;
+        let end_frame = 100000;
         let cropped_len = end_frame - start_frame;
         let mut sound = Sound::new();
         for i in start_frame..end_frame {
