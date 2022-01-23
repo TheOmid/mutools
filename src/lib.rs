@@ -30,10 +30,10 @@ mod tests {
 
     #[test]
     fn test_sound_crop() {
-        //let sound = Box::from(Sound::from_file(FileDescriptor::WavFile(
-        //    String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
-        //)));
-        //let transformer = SoundTransformer::from(sound);
+        let sound = Box::from(Sound::from_file(FileDescriptor::WavFile(
+            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
+        )));
+        let transformer = SoundTransformer::from(sound);
         //transformer.push(transforms::Crop::from(transforms::Crop::ArgsT{std::time::duration....)
 
         // Next - Implement SoundTransformer and have it apply a crop transformation to the sound
