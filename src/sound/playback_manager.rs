@@ -25,7 +25,7 @@ impl PlaybackManager {
     }
 
     pub fn append(&self, sound: SoundBuffer) -> () {
-        self.sink.append(<SoundBuffer as Into<SamplesBuffer<f32>>>::into(sound));
+        self.sink.append(sound.into_iter());
     }
 
     pub fn play(&self) -> () {

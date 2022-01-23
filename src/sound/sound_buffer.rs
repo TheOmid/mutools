@@ -3,7 +3,7 @@ use std::fs::{File};
 use std::slice::SliceIndex;
 
 use rodio::buffer::SamplesBuffer;
-use rodio::{Decoder};
+use rodio::{Decoder, Sample};
 use rodio::source::{Source, SamplesConverter};
 
 pub struct SoundSample {
@@ -106,6 +106,10 @@ impl std::iter::IntoIterator for SoundBuffer {
     }
 }
 
+
+
+
+
 impl SoundSample {
 }
 
@@ -164,10 +168,88 @@ impl SoundBuffer {
     }
 }
 
+pub struct RawSamplesIterator {
+    _samples_vector: Vec<f32>,
+    _index: usize,
+}
+
+impl SoundBuffer {
+    pub fn into_raw_samples_iter(self) -> RawSamplesIterator {
+        RawSamplesIterator {
+            _index: 0,
+            _samples_vector: self._buffer.into(),
+        }
+    }
+}
+
 impl Into<SamplesBuffer<f32>> for SoundBuffer {
     fn into(self) -> SamplesBuffer<f32> {
         let _sample_vec : Vec<f32> = self._buffer.clone().into();
         SamplesBuffer::<f32>::new(SoundBuffer::NUM_CHANNELS, SoundBuffer::SAMPLE_RATE, _sample_vec)
     }
 }
+
+impl rodio::Sample for SoundSample {
+    fn lerp(first: Self, second: Self, numerator: u32, denominator: u32) -> Self {
+        Self::from(f32::lerp(first.into(), second.into(), numerator, denominator))
+    }
+
+    fn amplify(self, value: f32) -> Self {
+        Self::from(f32::amplify(self.into(), value))
+    }
+
+    fn saturating_add(self, other: Self) -> Self {
+        Self::from(f32::saturating_add(self.into(), other.into()))
+    }
+
+    fn zero_value() -> Self {
+        Self::from(f32::zero_value())
+    }
+}
+
+unsafe impl rodio::cpal::Sample for SoundSample {
+    const FORMAT: rodio::cpal::SampleFormat = rodio::cpal::SampleFormat::F32;
+    fn to_f32(&self) -> f32 {
+        self._val
+    }
+
+    fn to_i16(&self) -> i16 {
+        f32::to_i16(&self.to_f32())
+    }
+
+    fn to_u16(&self) -> u16 {
+        f32::to_u16(&self.to_f32())
+    }
+
+    fn from<S>(s: &S) -> Self
+    where
+            S: rodio::cpal::Sample {
+        <SoundSample as From<f32>>::from(
+            rodio::cpal::Sample::to_f32(s)
+        )
+    }
+}
+
+
+impl rodio::Source for SamplesVectorIterator {
+    fn current_frame_len(&self) -> Option<usize> {
+        None
+    }
+
+    fn channels(&self) -> u16 {
+        SoundBuffer::NUM_CHANNELS
+    }
+
+    fn sample_rate(&self) -> u32 {
+        SoundBuffer::SAMPLE_RATE
+    }
+
+    fn total_duration(&self) -> Option<std::time::Duration> {
+        None
+    }
+}
+
+
+
+
 
