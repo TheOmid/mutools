@@ -56,7 +56,6 @@ pub fn receive_midi_frames<T> (receiver: T)
                      .ok_or("invalid input port selected")?
         }
     };
-    
     println!("\nOpening connection");
     let in_port_name = midi_in.port_name(in_port)?;
 
@@ -65,7 +64,6 @@ pub fn receive_midi_frames<T> (receiver: T)
                                             move |stamp, message, _| {
         receiver.receive_midi_frame(RawMidiFrame{ timestamp: stamp, message: message.clone() });
     }, ())?;
-    
     println!("Connection open, reading input from '{}' (press enter to exit) ...", in_port_name);
 
     input.clear();

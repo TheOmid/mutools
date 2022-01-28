@@ -36,10 +36,10 @@ mod tests {
         let player = PlaybackManager::new();
 
         let sound_1 = Sound::from_file(FileDescriptor::WavFile(
-            String::from("./bin/FS_001/BASS/bass_sub_0.wav")
+            String::from("./bin/FS_001/SYNTH/synth_pedal_0.wav")
         ));
         let sound_2 = Sound::from_file(FileDescriptor::WavFile(
-            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
+            String::from("./bin/FS_001/SYNTH/synth_tape_loop_0.wav")
         ));
 
         let crop_transform = CropTransform::from_start_end(
@@ -50,7 +50,7 @@ mod tests {
         let cropped_sound_1 = crop_transform.transform(sound_1.clone());
         let cropped_sound_2 = crop_transform.transform(sound_2.clone());
 
-        let lerp_transform = LerpTransform::from(cropped_sound_2.clone(), 2, 8);
+        let lerp_transform = LerpTransform::from(cropped_sound_2.clone(), 1, 2);
         let lerped_sound = lerp_transform.transform(cropped_sound_1.clone());
 
         player.append(cropped_sound_1.clone_buffer());
