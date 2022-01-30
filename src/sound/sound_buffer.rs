@@ -3,7 +3,7 @@ use std::fs::{File};
 use std::slice::SliceIndex;
 
 use rodio::buffer::SamplesBuffer;
-use rodio::{Decoder, Sample};
+use rodio::Decoder;
 use rodio::source::{Source, SamplesConverter};
 
 pub struct SoundSample {
