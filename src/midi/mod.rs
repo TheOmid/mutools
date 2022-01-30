@@ -71,7 +71,6 @@ pub fn receive_midi_frames<T> (receiver: T)
 
     println!("Closing connection");
     Ok(())
-
 }
 
 fn run() -> Result<(), Box<dyn Error>> {

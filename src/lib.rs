@@ -4,7 +4,10 @@ mod midi;
 
 #[cfg(test)]
 mod tests {
-    use crate::transform::{CropTransform, LerpTransform, SoundTransform};
+    use crate::transform::{CropTransform,
+                           LerpTransform,
+                           SoundTransform,
+                           PitchTransform };
 
     use super::sound::{Sound,
                        FileDescriptor,
@@ -32,7 +35,7 @@ mod tests {
     }
 
     #[test]
-    fn test_sound_crop() {
+    fn test_crop_transform() {
         let player = PlaybackManager::new();
 
         let sound_1 = Sound::from_file(FileDescriptor::WavFile(
@@ -58,5 +61,22 @@ mod tests {
         player.append(lerped_sound.clone_buffer());
         player.play()
     }
+
+    #[test]
+    fn test_pitch_transform() {
+
+        let player = PlaybackManager::new();
+
+        let sound_1 = Sound::from_file(FileDescriptor::WavFile(
+            String::from("./bin/FS_001/SYNTH/synth_pedal_0.wav")
+        ));
+
+        let pitch_transform = PitchTransform::from_freq(230);
+        let pitched_sound= pitch_transform.transform(sound_1.clone());
+
+        player.append(pitched_sound.clone_buffer());
+        player.play()
+    }
+
 }
 
