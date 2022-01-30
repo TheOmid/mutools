@@ -6,6 +6,8 @@ use rodio::buffer::SamplesBuffer;
 use rodio::Decoder;
 use rodio::source::{Source, SamplesConverter};
 
+use rustfft::num_complex::Complex;
+
 pub struct SoundSample {
     _val: f32,
 }
@@ -30,6 +32,20 @@ impl From<f32> for SoundSample {
 impl Into<f32> for SoundSample {
     fn into(self) -> f32 {
         self._val
+    }
+}
+
+impl From<Complex<f32>> for SoundSample {
+    fn from(complex_num: Complex<f32>) -> Self {
+        //Self::from(complex_num.l1_norm())
+        Self::from(complex_num.norm())
+    }
+}
+
+impl Into<Complex<f32>> for SoundSample {
+    fn into(self) -> Complex<f32> {
+        //Complex::new(<Self as Into<f32>>::into(self) / 88100.0, 0.0)
+        Complex::new(0.0, <Self as Into<f32>>::into(self) / 44100.0)
     }
 }
 
@@ -58,6 +74,7 @@ impl SamplesVector {
     pub fn push_sample(&mut self, sample: SoundSample) -> () {
         &mut self._buffer.push(sample);
     }
+
 }
 
 impl Clone for SamplesVector {
@@ -110,10 +127,6 @@ impl std::iter::IntoIterator for SoundBuffer {
     }
 }
 
-
-
-
-
 impl SoundSample {
 }
 
@@ -121,10 +134,20 @@ pub struct SoundBuffer {
     _buffer: SamplesVector,
 }
 
+/*
 impl<T: Into<SoundSample>> From<Vec<T>> for SoundBuffer where f32: From<T> {
     fn from(src: Vec<T>) -> Self {
         SoundBuffer {
             _buffer: SamplesVector::from(src),
+        }
+    }
+}
+*/
+
+impl <T: Into<SoundSample>> From<Vec<T>> for SoundBuffer {
+    fn from(src: Vec<T>) -> Self {
+        Self {
+            _buffer: SamplesVector::from(src.into_iter().map(|e| <T as Into<SoundSample>>::into(e)).collect::<Vec<SoundSample>>()),
         }
     }
 }
@@ -155,6 +178,10 @@ impl SoundBuffer {
         let decoder = Decoder::new(file).unwrap();
         let vec = Vec::<f32>::from_iter(decoder.convert_samples());
         SoundBuffer::from(vec)
+    }
+
+    pub fn get_samples(self) -> SamplesVector {
+        self._buffer
     }
 
     pub fn len(&self) -> usize {

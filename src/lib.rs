@@ -68,12 +68,13 @@ mod tests {
         let player = PlaybackManager::new();
 
         let sound_1 = Sound::from_file(FileDescriptor::WavFile(
-            String::from("./bin/FS_001/SYNTH/synth_pedal_0.wav")
+            String::from("./bin/FS_001/BASS/bass_triangle_1.wav")
         ));
 
         let pitch_transform = PitchTransform::from_freq(230);
-        let pitched_sound= pitch_transform.transform(sound_1.clone());
 
+        player.append(sound_1.clone_buffer());
+        let pitched_sound= pitch_transform.transform(sound_1.clone());
         player.append(pitched_sound.clone_buffer());
         player.play()
     }
