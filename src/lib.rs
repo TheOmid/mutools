@@ -1,8 +1,8 @@
+mod audio;
 mod sound;
 mod transform;
 mod midi;
 
-#[cfg(test)]
 mod tests {
     use crate::transform::{CropTransform,
                            LerpTransform,
