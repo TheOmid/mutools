@@ -45,7 +45,7 @@ impl From<Complex<f32>> for SoundSample {
 impl Into<Complex<f32>> for SoundSample {
     fn into(self) -> Complex<f32> {
         //Complex::new(<Self as Into<f32>>::into(self) / 88100.0, 0.0)
-        Complex::new(0.0, <Self as Into<f32>>::into(self) / 44100.0)
+        Complex::new(0.0, <Self as Into<f32>>::into(self) / 93000.0)
     }
 }
 
@@ -158,8 +158,8 @@ pub enum FileDescriptor {
 
 impl SoundBuffer {
 
-    const SAMPLE_RATE : u32 = 48000;
-    const NUM_CHANNELS : u16 = 2;
+    const SAMPLE_RATE : u32 = 44100;
+    const NUM_CHANNELS : u16 = 1;
 
     pub fn new() -> Self {
         SoundBuffer {
