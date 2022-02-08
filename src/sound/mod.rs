@@ -1,6 +1,5 @@
 mod sound_buffer;
 pub use sound_buffer::{SoundBuffer, SoundSample, SamplesVector, FileDescriptor};
-
 mod playback_manager;
 pub use playback_manager::PlaybackManager;
 
