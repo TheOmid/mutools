@@ -1,6 +1,6 @@
 
-mod base;
-pub use base::*;
+mod sound;
+pub use sound::*;
 
 mod synthesizer;
 pub use synthesizer::*;

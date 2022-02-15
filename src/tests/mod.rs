@@ -1,5 +1,5 @@
 
-use crate::base::*;
+use crate::sound::*;
 use crate::synthesizer::*;
 
 #[test]
