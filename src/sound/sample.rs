@@ -41,3 +41,4 @@ impl Sample for RawSample {
     type Float = f32;
     const EQUILIBRIUM: Self = RawSample { _val: EQUILIBRIUM_VAL };
 }
+
