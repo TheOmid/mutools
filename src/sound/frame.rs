@@ -22,10 +22,11 @@ impl Frame for MonoFrame {
     const EQUILIBRIUM : Self = MonoFrame { sample: RawSample::EQUILIBRIUM };
     const CHANNELS : usize = 1;
 
-    fn from_fn<F>(from: F) -> Self
+    fn from_fn<F>(mut from: F) -> Self
         where F: FnMut(usize) -> Self::Sample {
+        let v = (from)(0);
         MonoFrame {
-            sample: from(0)
+            sample: v
         }
     }
 
@@ -46,7 +47,36 @@ impl Frame for MonoFrame {
         }
     }
 
-    unsafe fn
+    unsafe fn channel_unchecked(&self, idx: usize) -> &Self::Sample {
+        match idx {
+            0 => &self.sample,
+            _ => panic!("Out of bounds!")
+        }
+    }
+
+    fn map<F, M>(self, mut map: M) -> F
+        where F: Frame<NumChannels = Self::NumChannels>,
+              M: FnMut(Self::Sample) -> <F as Frame>::Sample {
+        let res = map(self.sample);
+        F::from_samples(&mut vec![res].into_iter()).unwrap()
+    }
+
+
+    fn zip_map<O, F, M>(self, other: O, mut zip_map: M) -> F where
+                F: Frame<NumChannels = Self::NumChannels>,
+                M: FnMut(Self::Sample, <O as Frame>::Sample) -> <F as Frame>::Sample,
+                O: Frame<NumChannels = Self::NumChannels> {
+
+        let res = zip_map(self.sample, *other.channel(0).unwrap_or(&O::Sample::EQUILIBRIUM));
+        F::from_samples(&mut vec![res].into_iter()).unwrap()
+    }
+
+    fn to_signed_frame(self) -> Self::Signed {
+        self.sample.to_signed_sample()
+    }
+
+    fn to_float_frame(self) -> Self::Float {
+        self.sample.to_float_sample()
+    }
 
 }
-
