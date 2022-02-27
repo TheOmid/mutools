@@ -1,8 +1,8 @@
 
-mod sound;
+pub mod sound;
 pub use sound::*;
 
-mod synthesizer;
+pub mod synthesizer;
 pub use synthesizer::*;
 
 mod tests;

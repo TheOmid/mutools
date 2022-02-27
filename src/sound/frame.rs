@@ -10,7 +10,6 @@ pub struct MonoFrame {
     sample: RawSample
 }
 
-
 impl Frame for MonoFrame {
 
     type Sample = RawSample;
