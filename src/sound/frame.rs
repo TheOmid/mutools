@@ -4,8 +4,8 @@ use super::sample::*;
 use super::sample_sequence::*;
 
 #[derive(Copy, Clone, PartialEq)]
-pub struct AudioFrame<const NumChannels: usize> {
-    samples: SampleSequence<NumChannels>
+pub struct AudioFrame<const N: usize> {
+    samples: SampleSequence<Self::NumChannels>
 }
 
 impl Frame for AudioFrame<NumChannels> {
@@ -16,7 +16,7 @@ impl Frame for AudioFrame<NumChannels> {
     type Float = f32;
 
     const EQUILIBRIUM : Self = AudioFrame { sample: AudioSample::EQUILIBRIUM };
-    const CHANNELS : usize = 1;
+    const CHANNELS : usize = NumChannels;
 
     fn from_fn<F>(mut from: F) -> Self
         where F: FnMut(usize) -> Self::Sample {
