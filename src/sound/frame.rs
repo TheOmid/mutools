@@ -5,22 +5,22 @@ use std::array;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct AudioFrame<const NChannels: usize> {
-    samples: array<AudioSample, NChannels>
+    samples: [AudioSample; NChannels]
 }
 
 impl<N: NumChannels> Frame for AudioFrame<N> {
     type Sample = AudioSample;
     type NumChannels = N;
-    type Channels = dyn Iterator<Item=AudioSample>;
+    type Channels = Channels<Self>;
     type Signed = i32;
     type Float = f32;
 
     const EQUILIBRIUM : Self = AudioFrame { samples: AudioSample::EQUILIBRIUM };
     const CHANNELS : usize = Self::N;
 
-    fn from_fn<F>(mut from: F) -> Self
-        where F: FnMut(usize) -> Self::Sample {
-        for let i: usize in 0..Self::NumChannels {
+    fn from_fn<F>(mut from: F) -> Self where F: FnMut(usize) -> Self::Sample {
+        let samples : [AudioSample; N];
+        for i in Self::NumChannels {
             let v = (from)(i);
         }
         Self {
