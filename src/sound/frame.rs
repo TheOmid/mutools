@@ -1,22 +1,22 @@
 use dasp::frame::*;
 
 use super::sample::*;
-use super::sample_sequence::*;
+use std::array;
 
 #[derive(Copy, Clone, PartialEq)]
-pub struct AudioFrame<const N: usize> {
-    samples: SampleSequence<Self::NumChannels>
+pub struct AudioFrame<const NChannels: usize> {
+    samples: array<AudioSample, NChannels>
 }
 
-impl Frame for AudioFrame<NumChannels> {
+impl<N: NumChannels> Frame for AudioFrame<N> {
     type Sample = AudioSample;
-    type NumChannels = Self::NumChannels;
-    type Channels = SampleSequence<NumChannels>;
+    type NumChannels = N;
+    type Channels = dyn Iterator<Item=AudioSample>;
     type Signed = i32;
     type Float = f32;
 
-    const EQUILIBRIUM : Self = AudioFrame { sample: AudioSample::EQUILIBRIUM };
-    const CHANNELS : usize = NumChannels;
+    const EQUILIBRIUM : Self = AudioFrame { samples: AudioSample::EQUILIBRIUM };
+    const CHANNELS : usize = Self::N;
 
     fn from_fn<F>(mut from: F) -> Self
         where F: FnMut(usize) -> Self::Sample {
@@ -28,14 +28,14 @@ impl Frame for AudioFrame<NumChannels> {
         }
     }
 
-    fn from_samples<I>(samples: &mut I) -> Option<AudioFrame> where I: Iterator<Item = Self::Sample> {
-        Some(MonoFrame {
-            sample: samples.next().unwrap_or(AudioSample::EQUILIBRIUM)
+    fn from_samples<I: Iterator<Item = Self::Sample>>(samples: &mut I) -> Option<AudioFrame<Self::NumChannels>> {
+        Some(AudioFrame::<Self::NumChannels> {
+            samples: Vec::<AudioSample>::from_iter(samples)
         })
     }
 
     fn channels(self) -> Self::Channels {
-        array::IntoIter::<AudioSample, Self::NumChannels>::new([self.sample])
+        self.samples.into_iter()
     }
 
     fn channel(&self, idx: usize) -> Option<&Self::Sample> {

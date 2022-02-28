@@ -1,8 +1,8 @@
 use super::sample::*;
 
 #[derive(Copy, Clone)]
-pub struct SampleSequence<const NumSamples: usize> {
-    samples: array<AudioSample, NumSamples>
+pub struct SampleSequence<NumSamples: dasp::frame::NumChannels> {
+    samples: std::array<AudioSample, NumSamples>
 }
 
 impl Iterator for SampleSequence {
