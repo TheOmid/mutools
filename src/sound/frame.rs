@@ -1,4 +1,4 @@
-use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut};
+use std::slice::SliceIndex;
 
 use super::sample::*;
 use dasp::frame::*;
