@@ -1,80 +1,86 @@
-use dasp::frame::*;
+use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut};
 
 use super::sample::*;
-use std::array;
+use dasp::frame::*;
 
 #[derive(Copy, Clone, PartialEq)]
-pub struct AudioFrame<const NChannels: usize> {
-    samples: [AudioSample; NChannels]
+pub struct MonoFrame {
+    val: [i32; 1],
 }
 
-impl<N: NumChannels> Frame for AudioFrame<N> {
-    type Sample = AudioSample;
-    type NumChannels = N;
-    type Channels = Channels<Self>;
+impl MonoFrame {
+    pub fn new() -> Self {
+        Self::EQUILIBRIUM
+    }
+}
+
+impl Frame for MonoFrame {
+    type Sample = i32;
+    type NumChannels = N1;
+    type Channels = Iterator<Item = i32>;
     type Signed = i32;
     type Float = f32;
 
-    const EQUILIBRIUM : Self = AudioFrame { samples: AudioSample::EQUILIBRIUM };
-    const CHANNELS : usize = Self::N;
+    const EQUILIBRIUM: Self = MonoFrame { val: [0] };
+    const CHANNELS: usize = 1;
 
-    fn from_fn<F>(mut from: F) -> Self where F: FnMut(usize) -> Self::Sample {
-        let samples : [AudioSample; N];
-        for i in Self::NumChannels {
-            let v = (from)(i);
-        }
-        Self {
-            samples: v
-        }
+    fn from_fn<F>(from: F) -> Self
+    where
+        F: FnMut(usize) -> Self::Sample,
+    {
+        MonoFrame { val: [from(0)] }
     }
 
-    fn from_samples<I: Iterator<Item = Self::Sample>>(samples: &mut I) -> Option<AudioFrame<Self::NumChannels>> {
-        Some(AudioFrame::<Self::NumChannels> {
-            samples: Vec::<AudioSample>::from_iter(samples)
+    fn from_samples<I>(samples: &mut I) -> Option<Self>
+    where
+        I: Iterator<Item = Self::Sample>,
+    {
+        Some(MonoFrame {
+            val: [{
+                match samples.next() {
+                    Some(x) => x,
+                    _ => 0,
+                }
+            }],
         })
     }
 
     fn channels(self) -> Self::Channels {
-        self.samples.into_iter()
+        self.val.iter()
     }
 
     fn channel(&self, idx: usize) -> Option<&Self::Sample> {
-        match idx {
-            0 => Some(&self.sample),
-            _ => None
-        }
+        self.val.get(idx)
     }
 
     unsafe fn channel_unchecked(&self, idx: usize) -> &Self::Sample {
-        match idx {
-            0 => &self.sample,
-            _ => panic!("Out of bounds!")
-        }
+        self.val.get(idx).unwrap()
     }
 
-    fn map<F, M>(self, mut map: M) -> F
-        where F: Frame<NumChannels = Self::NumChannels>,
-              M: FnMut(Self::Sample) -> <F as Frame>::Sample {
-        let res = map(self.sample);
-        F::from_samples(&mut vec![res].into_iter()).unwrap()
+    fn map<F, M>(self, map: M) -> F
+    where
+        F: Frame<NumChannels = Self::NumChannels>,
+        M: FnMut(Self::Sample) -> <F as Frame>::Sample,
+    {
+        let arr : [<F as Frame>::Sample; 1] = [map(self.val[0])];
+        F::from_samples(&mut arr.into_iter()).unwrap()
     }
 
-
-    fn zip_map<O, F, M>(self, other: O, mut zip_map: M) -> F where
-                F: Frame<NumChannels = Self::NumChannels>,
-                M: FnMut(Self::Sample, <O as Frame>::Sample) -> <F as Frame>::Sample,
-                O: Frame<NumChannels = Self::NumChannels> {
-
-        let res = zip_map(self.sample, *other.channel(0).unwrap_or(&O::Sample::EQUILIBRIUM));
-        F::from_samples(&mut vec![res].into_iter()).unwrap()
+    fn zip_map<O, F, M>(self, other: O, zip_map: M) -> F
+    where
+        F: Frame<NumChannels = Self::NumChannels>,
+        M: FnMut(Self::Sample, <O as Frame>::Sample) -> <F as Frame>::Sample,
+        O: Frame<NumChannels = Self::NumChannels>,
+    {
+        let arr : [<F as Frame>::Sample; 1] = [zip_map(self.val[0], *other.channel_unchecked(0))];
+        F::from_samples(&mut arr.into_iter()).unwrap()
     }
 
     fn to_signed_frame(self) -> Self::Signed {
-        self.sample.to_signed_sample()
+        Self::Signed::from(self.val[0])
     }
 
     fn to_float_frame(self) -> Self::Float {
-        self.sample.to_float_sample()
+        0.0
     }
-
 }
