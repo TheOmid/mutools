@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 use dasp::frame::*;
 use dasp_signal::Signal;
 
@@ -18,6 +17,4 @@ impl Signal for MonoSignal {
     }
 
 }
-=======
->>>>>>> 19b02cc (more impl and rustfmt)
 

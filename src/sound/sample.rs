@@ -30,19 +30,14 @@ impl FromSample<AudioSample> for i32 {
 
 impl FromSample<f32> for AudioSample {
     fn from_sample_(_val: f32) -> Self {
-<<<<<<< HEAD
         AudioSample {
             _val
         }
-=======
-        RawSample { _val }
->>>>>>> 19b02cc (more impl and rustfmt)
     }
 }
 
 impl FromSample<i32> for AudioSample {
     fn from_sample_(_val: i32) -> Self {
-<<<<<<< HEAD
         AudioSample {
             _val: to_f32(_val)
         }
@@ -54,19 +49,6 @@ impl Sample for AudioSample {
     type Signed = i32;
     type Float = f32;
     const EQUILIBRIUM: Self = AudioSample { _val: EQUILIBRIUM_VAL };
-=======
-        RawSample { _val: to_f32(_val) }
-    }
-}
-
-const EQUILIBRIUM_VAL: f32 = 0.0;
-impl Sample for RawSample {
-    type Signed = i32;
-    type Float = f32;
-    const EQUILIBRIUM: Self = RawSample {
-        _val: EQUILIBRIUM_VAL,
-    };
->>>>>>> 19b02cc (more impl and rustfmt)
 }
 
 
