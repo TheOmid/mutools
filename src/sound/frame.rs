@@ -1,7 +1,8 @@
 use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut};
+use dasp::*;
 
 use super::sample::*;
-use dasp::frame::*;
+use super::sample_sequence::*;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct MonoFrame {
@@ -14,10 +15,10 @@ impl MonoFrame {
     }
 }
 
-impl Frame for MonoFrame {
-    type Sample = i32;
-    type NumChannels = N1;
-    type Channels = Iterator<Item = i32>;
+impl dasp::frame::Frame for MonoFrame {
+    type Sample = AudioSample;
+    type NumChannels = dasp::frame::N1;
+    type Channels = SampleSequence;
     type Signed = i32;
     type Float = f32;
 
