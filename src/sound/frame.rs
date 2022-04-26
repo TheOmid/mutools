@@ -2,47 +2,77 @@ use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut};
 use dasp::*;
 
 use super::sample::*;
-use super::sample_sequence::*;
 
 #[derive(Copy, Clone, PartialEq)]
-pub struct MonoFrame {
-    val: [i32; 1],
+pub struct SterioFrame {
+    pub data: [AudioSample; 2],
 }
 
-impl MonoFrame {
+impl IntoIterator for SterioFrame {
+    type Item = AudioSample;
+    type IntoIter = SterioFrameIterator;
+
+    fn into_iter(self) -> Self::IntoIterator {
+        SterioFrameIterator {
+            index: 0,
+            frame: self
+        }
+    }
+}
+
+pub struct SterioFrameIterator {
+    index: usize,
+    frame: SterioFrame
+}
+
+impl Iterator for SterioFrameIterator {
+    type Item = AudioSample;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index >= 1 {
+            None
+        } else {
+            self.frame.val[self.index]
+        }
+    }
+}
+
+impl SterioFrame {
     pub fn new() -> Self {
         Self::EQUILIBRIUM
     }
 }
 
-impl dasp::frame::Frame for MonoFrame {
+impl dasp::frame::Frame for SterioFrame {
     type Sample = AudioSample;
-    type NumChannels = dasp::frame::N1;
-    type Channels = SampleSequence;
-    type Signed = i32;
-    type Float = f32;
+    type NumChannels = dasp::frame::N2;
+    type Channels = SterioFrameIterator;
+    type Signed = SterioFrame;
+    type Float = SterioFrame;
 
-    const EQUILIBRIUM: Self = MonoFrame { val: [0] };
+    const EQUILIBRIUM: Self = SterioFrame { frame: [0, 0] };
     const CHANNELS: usize = 1;
 
     fn from_fn<F>(from: F) -> Self
     where
         F: FnMut(usize) -> Self::Sample,
     {
-        MonoFrame { val: [from(0)] }
+        SterioFrame {
+            data: {
+                let tmp: [AudioSample; 2];
+                for i in 0..2 {
+                    tmp[i] = from(i)
+                }
+                tmp
+            }
+        }
     }
 
     fn from_samples<I>(samples: &mut I) -> Option<Self>
     where
         I: Iterator<Item = Self::Sample>,
     {
-        Some(MonoFrame {
-            val: [{
-                match samples.next() {
-                    Some(x) => x,
-                    _ => 0,
-                }
-            }],
+        Some(SterioFrame {
+            data: samples.data.copy()
         })
     }
 
@@ -78,10 +108,10 @@ impl dasp::frame::Frame for MonoFrame {
     }
 
     fn to_signed_frame(self) -> Self::Signed {
-        Self::Signed::from(self.val[0])
+        Self::Signed::from(self)
     }
 
     fn to_float_frame(self) -> Self::Float {
-        0.0
+        Self::Float::from(self)
     }
 }
