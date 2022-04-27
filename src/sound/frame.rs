@@ -1,18 +1,41 @@
-use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut};
+
+use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut, iter::FromIterator};
 use dasp::*;
 
 use super::sample::*;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct SterioFrame {
-    pub data: [AudioSample; 2],
+    pub data: [f32; 2],
+}
+
+impl SterioFrame {
+    pub fn new() -> Self {
+        Self::EQUILIBRIUM
+    }
+
+    pub fn get_channel(&self, idx: usize) -> Option<&f32> {
+        if idx <= 1 {
+            Some(&self.data[idx])
+        } else {
+            None
+        }
+    }
+
+    pub fn get_channel_val(&self, idx: usize) -> Option<f32> {
+        if idx <= 1 {
+            Some(self.data[idx])
+        } else {
+            None
+        }
+    }
 }
 
 impl IntoIterator for SterioFrame {
-    type Item = AudioSample;
+    type Item = f32;
     type IntoIter = SterioFrameIterator;
 
-    fn into_iter(self) -> Self::IntoIterator {
+    fn into_iter(self) -> Self::IntoIter {
         SterioFrameIterator {
             index: 0,
             frame: self
@@ -26,30 +49,23 @@ pub struct SterioFrameIterator {
 }
 
 impl Iterator for SterioFrameIterator {
-    type Item = AudioSample;
+    type Item = f32;
     fn next(&mut self) -> Option<Self::Item> {
-        if self.index >= 1 {
-            None
-        } else {
-            self.frame.val[self.index]
-        }
-    }
-}
-
-impl SterioFrame {
-    pub fn new() -> Self {
-        Self::EQUILIBRIUM
+        self.index += 1;
+        self.frame.get_channel_val(self.index-1)
     }
 }
 
 impl dasp::frame::Frame for SterioFrame {
-    type Sample = AudioSample;
+    type Sample = f32;
     type NumChannels = dasp::frame::N2;
     type Channels = SterioFrameIterator;
     type Signed = SterioFrame;
     type Float = SterioFrame;
 
-    const EQUILIBRIUM: Self = SterioFrame { frame: [0, 0] };
+    const EQUILIBRIUM: Self = SterioFrame {
+        data: [0.0, 0.0]
+    };
     const CHANNELS: usize = 1;
 
     fn from_fn<F>(from: F) -> Self
@@ -58,11 +74,12 @@ impl dasp::frame::Frame for SterioFrame {
     {
         SterioFrame {
             data: {
-                let tmp: [AudioSample; 2];
+                let tmp: &mut [f32; 2] = &mut Self::EQUILIBRIUM.data.clone();
+                let f = &mut F::from(from);
                 for i in 0..2 {
-                    tmp[i] = from(i)
+                    tmp[i] = f(i)
                 }
-                tmp
+                *tmp
             }
         }
     }
@@ -71,40 +88,43 @@ impl dasp::frame::Frame for SterioFrame {
     where
         I: Iterator<Item = Self::Sample>,
     {
-        Some(SterioFrame {
-            data: samples.data.copy()
+        Some(Self {
+            data: [samples.next().unwrap_or(0.0), samples.next().unwrap_or(0.0)],
         })
     }
 
     fn channels(self) -> Self::Channels {
-        self.val.iter()
+        self.into_iter()
     }
 
     fn channel(&self, idx: usize) -> Option<&Self::Sample> {
-        self.val.get(idx)
+        self.get_channel(idx)
     }
 
     unsafe fn channel_unchecked(&self, idx: usize) -> &Self::Sample {
-        self.val.get(idx).unwrap()
+        self.get_channel(idx).unwrap()
     }
 
-    fn map<F, M>(self, map: M) -> F
+    fn map<F, M>(self, map_fn: M) -> F
     where
         F: Frame<NumChannels = Self::NumChannels>,
         M: FnMut(Self::Sample) -> <F as Frame>::Sample,
     {
-        let arr : [<F as Frame>::Sample; 1] = [map(self.val[0])];
-        F::from_samples(&mut arr.into_iter()).unwrap()
+        F::from_samples(&mut self.channels()
+                            .map(map_fn)).unwrap_or(F::EQUILIBRIUM)
     }
 
-    fn zip_map<O, F, M>(self, other: O, zip_map: M) -> F
+    fn zip_map<O, F, M>(self, other: O, zip_map_fn: M) -> F
     where
         F: Frame<NumChannels = Self::NumChannels>,
         M: FnMut(Self::Sample, <O as Frame>::Sample) -> <F as Frame>::Sample,
         O: Frame<NumChannels = Self::NumChannels>,
     {
-        let arr : [<F as Frame>::Sample; 1] = [zip_map(self.val[0], *other.channel_unchecked(0))];
-        F::from_samples(&mut arr.into_iter()).unwrap()
+        let f = &mut M::from(zip_map_fn);
+        let samples = &mut self.channels()
+                        .zip(other.channels())
+                        .map(|(a, b)| { f(a, b) });
+        F::from_samples(samples).unwrap_or(F::EQUILIBRIUM)
     }
 
     fn to_signed_frame(self) -> Self::Signed {

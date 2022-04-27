@@ -46,7 +46,7 @@ impl FromSample<i32> for AudioSample {
 
 const EQUILIBRIUM_VAL : f32 = 0.0;
 impl Sample for AudioSample {
-    type Signed = i32;
+    type Signed = f32;
     type Float = f32;
     const EQUILIBRIUM: Self = AudioSample { _val: EQUILIBRIUM_VAL };
 }

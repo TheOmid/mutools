@@ -4,16 +4,19 @@ use dasp_signal::Signal;
 use super::frame::*;
 
 #[derive(Clone)]
-pub struct MonoSignal {
-    frames: Vec<MonoFrame>
+pub struct SterioSignal {
+    frames: Vec<SterioFrame>
 }
 
-impl Signal for MonoSignal {
+impl Signal for SterioSignal {
 
-    type Frame = MonoFrame;
+    type Frame = SterioFrame;
     fn next(&mut self) -> Self::Frame {
-        let v = self.frames.clone().into_iter().next().unwrap_or(Self::Frame::EQUILIBRIUM);
-        v
+        self.frames
+            .clone()
+            .into_iter()
+            .next()
+            .unwrap_or(Self::Frame::EQUILIBRIUM)
     }
 
 }
