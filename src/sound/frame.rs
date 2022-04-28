@@ -1,6 +1,5 @@
-
-use std::{slice::SliceIndex, slice::Iter, borrow::BorrowMut, iter::FromIterator};
 use dasp::*;
+use std::{borrow::BorrowMut, iter::FromIterator, slice::Iter, slice::SliceIndex};
 
 use super::sample::*;
 
@@ -38,21 +37,21 @@ impl IntoIterator for SterioFrame {
     fn into_iter(self) -> Self::IntoIter {
         SterioFrameIterator {
             index: 0,
-            frame: self
+            frame: self,
         }
     }
 }
 
 pub struct SterioFrameIterator {
     index: usize,
-    frame: SterioFrame
+    frame: SterioFrame,
 }
 
 impl Iterator for SterioFrameIterator {
     type Item = f32;
     fn next(&mut self) -> Option<Self::Item> {
         self.index += 1;
-        self.frame.get_channel_val(self.index-1)
+        self.frame.get_channel_val(self.index - 1)
     }
 }
 
@@ -63,9 +62,7 @@ impl dasp::frame::Frame for SterioFrame {
     type Signed = SterioFrame;
     type Float = SterioFrame;
 
-    const EQUILIBRIUM: Self = SterioFrame {
-        data: [0.0, 0.0]
-    };
+    const EQUILIBRIUM: Self = SterioFrame { data: [0.0, 0.0] };
     const CHANNELS: usize = 1;
 
     fn from_fn<F>(from: F) -> Self
@@ -80,7 +77,7 @@ impl dasp::frame::Frame for SterioFrame {
                     tmp[i] = f(i)
                 }
                 *tmp
-            }
+            },
         }
     }
 
@@ -110,8 +107,7 @@ impl dasp::frame::Frame for SterioFrame {
         F: Frame<NumChannels = Self::NumChannels>,
         M: FnMut(Self::Sample) -> <F as Frame>::Sample,
     {
-        F::from_samples(&mut self.channels()
-                            .map(map_fn)).unwrap_or(F::EQUILIBRIUM)
+        F::from_samples(&mut self.channels().map(map_fn)).unwrap_or(F::EQUILIBRIUM)
     }
 
     fn zip_map<O, F, M>(self, other: O, zip_map_fn: M) -> F
@@ -121,9 +117,7 @@ impl dasp::frame::Frame for SterioFrame {
         O: Frame<NumChannels = Self::NumChannels>,
     {
         let f = &mut M::from(zip_map_fn);
-        let samples = &mut self.channels()
-                        .zip(other.channels())
-                        .map(|(a, b)| { f(a, b) });
+        let samples = &mut self.channels().zip(other.channels()).map(|(a, b)| f(a, b));
         F::from_samples(samples).unwrap_or(F::EQUILIBRIUM)
     }
 

@@ -5,11 +5,11 @@ use super::frame::*;
 
 #[derive(Clone)]
 pub struct SterioSignal {
-    frames: Vec<SterioFrame>
+    frames: Vec<SterioFrame>,
 }
 
-impl Signal for SterioSignal {
 
+impl Signal for SterioSignal {
     type Frame = SterioFrame;
     fn next(&mut self) -> Self::Frame {
         self.frames
@@ -18,6 +18,4 @@ impl Signal for SterioSignal {
             .next()
             .unwrap_or(Self::Frame::EQUILIBRIUM)
     }
-
 }
-
