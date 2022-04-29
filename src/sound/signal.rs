@@ -8,7 +8,6 @@ pub struct SterioSignal {
     frames: Vec<SterioFrame>,
 }
 
-
 impl Signal for SterioSignal {
     type Frame = SterioFrame;
     fn next(&mut self) -> Self::Frame {

@@ -15,15 +15,11 @@ impl Sound {
         }
     }
 
-    pub fn interpolate_frame(&self, index: usize) -> Option<f32> {
-        let mut rng = rand::thread_rng();
-        //let val = rng.gen::<f32>();
-        let val1 = (f32::from(index as f32) / 16.0).sin() * 4.0;
-        let val2 = (f32::from(index as f32) / 8.0).sin() * 4.0;
-        let val2 = (f32::from(index as f32) / 32.0).sin() * 4.0;
-        let val2 = (f32::from(index as f32) / 64.0).sin() * 4.0;
-        let res = val1 + val2;
-        println!("{}", res);
+    pub fn add_frames(&self, index: usize) -> Option<SterioFrame> {
+        let mut res = SterioSignal::EQUILIBRIUM.clone();
+        for signal in self.signals {
+            res = res.add_amp(signal.get_channel(index))
+        }
         Some(res)
     }
 }
@@ -51,7 +47,9 @@ impl Iterator for SoundIterator {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.frame_index += 1;
-        self.sound.interpolate_frame(self.frame_index-1)
+        let frame = self.sound.add_frames(self.frame_index-1)
+                    .unwrap_or(SterioFrame::EQUILIBRIUM);
+        return frame[0] + frame[1]
     }
 
 }
