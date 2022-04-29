@@ -28,6 +28,10 @@ impl SterioFrame {
             None
         }
     }
+
+    pub fn as_mono_frame(&self) -> f32 {
+        self.data[0] + self.data[1]
+    }
 }
 
 impl IntoIterator for SterioFrame {

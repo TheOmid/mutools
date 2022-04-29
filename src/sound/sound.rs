@@ -16,33 +16,28 @@ impl Sound {
         }
     }
 
-    pub fn add_frames(&self, index: usize) -> Option<SterioFrame> {
-        let mut res = SterioSignal::EQUILIBRIUM.clone();
-        for signal in self.signals {
-            res = res.add_amp(signal.get_channel(index))
+    pub fn get_raw_mono_frame(&self, index: usize) -> Option<f32> {
+        let mut mono_frame: f32 = 0.0;
+        for signal in &self.signals {
+            if signal.get_raw_frame(index) == None {
+                return None
+            }
+            mono_frame += signal.get_raw_frame(index).unwrap().as_mono_frame()
         }
-        Some(res)
-    }
-
-    pub fn append_signal(&mut self, signal: &Signal<Frame=dyn f32>) -> () {
-
-    }
-
-    pub fn append_signal(&mut self, signal: &Signal<Frame=dyn<[f32; 2]>>) -> () {
-
+        Some(mono_frame)
     }
 
     pub fn append_signal(&mut self, signal: &SterioSignal) -> () {
-
+        &mut self.signals.push(signal.clone());
     }
 }
 
 impl IntoIterator for Sound {
-    type IntoIter = SoundIterator;
-    type Item = <SoundIterator as Iterator>::Item;
+    type IntoIter = MonoSoundIterator;
+    type Item = <MonoSoundIterator as Iterator>::Item;
 
     fn into_iter(self) -> Self::IntoIter {
-        SoundIterator {
+        MonoSoundIterator {
             frame_index: 0,
             sound: self.clone()
         }
@@ -50,25 +45,22 @@ impl IntoIterator for Sound {
 
 }
 
-pub struct SoundIterator {
+pub struct MonoSoundIterator {
     frame_index: usize,
     sound: Sound
 }
 
-impl Iterator for SoundIterator {
+impl Iterator for MonoSoundIterator {
     type Item = f32;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.frame_index += 1;
-        let frame = self.sound
-                    .add_frames(self.frame_index-1)
-                    .unwrap_or(SterioFrame::EQUILIBRIUM);
-        return frame[0] + frame[1]
+        self.sound.get_raw_mono_frame(self.frame_index - 1)
     }
 
 }
 
-impl rodio::Source for SoundIterator {
+impl rodio::Source for MonoSoundIterator {
 
     fn current_frame_len(&self) -> Option<usize> {
         //Some(self.frame_index % )
