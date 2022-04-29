@@ -18,17 +18,27 @@ impl Sound {
 
     pub fn get_raw_mono_frame(&self, index: usize) -> Option<f32> {
         let mut mono_frame: f32 = 0.0;
+        let mut all_none = true;
         for signal in &self.signals {
-            if signal.get_raw_frame(index) == None {
-                return None
+            if signal.get_raw_frame(index) != None {
+                mono_frame += signal.get_raw_frame(index).unwrap().as_mono_frame();
+                all_none = false;
             }
-            mono_frame += signal.get_raw_frame(index).unwrap().as_mono_frame()
+        }
+        if all_none {
+            return None;
         }
         Some(mono_frame)
     }
+}
 
-    pub fn append_signal(&mut self, signal: &SterioSignal) -> () {
-        &mut self.signals.push(signal.clone());
+
+impl<T> Sound<T> where
+    T: dasp::frame::Frame,
+    f32: dasp::sample::FromSample<<T as dasp::Frame>::Sample> {
+
+    pub fn append_signal(&mut self, signal: &mut dyn Signal<Frame=T>) -> () {
+        &mut self.signals.push(SterioSignal::from(signal));
     }
 }
 
@@ -63,7 +73,6 @@ impl Iterator for MonoSoundIterator {
 impl rodio::Source for MonoSoundIterator {
 
     fn current_frame_len(&self) -> Option<usize> {
-        //Some(self.frame_index % )
         None
     }
 

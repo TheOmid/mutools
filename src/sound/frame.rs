@@ -34,6 +34,14 @@ impl SterioFrame {
     }
 }
 
+impl From<[f32; 2]> for SterioFrame {
+    fn from(data: [f32; 2]) -> Self {
+        Self {
+            data
+        }
+    }
+}
+
 impl IntoIterator for SterioFrame {
     type Item = f32;
     type IntoIter = SterioFrameIterator;
