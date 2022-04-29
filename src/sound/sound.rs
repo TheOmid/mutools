@@ -1,7 +1,8 @@
 use std::time::Duration;
-use rand::Rng;
+use dasp_signal::Signal;
 
-use super::signal::{SterioSignal};
+use super::signal::SterioSignal;
+use super::frame::SterioFrame;
 
 #[derive(Clone)]
 pub struct Sound {
@@ -21,6 +22,18 @@ impl Sound {
             res = res.add_amp(signal.get_channel(index))
         }
         Some(res)
+    }
+
+    pub fn append_signal(&mut self, signal: &Signal<Frame=dyn f32>) -> () {
+
+    }
+
+    pub fn append_signal(&mut self, signal: &Signal<Frame=dyn<[f32; 2]>>) -> () {
+
+    }
+
+    pub fn append_signal(&mut self, signal: &SterioSignal) -> () {
+
     }
 }
 
@@ -47,7 +60,8 @@ impl Iterator for SoundIterator {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.frame_index += 1;
-        let frame = self.sound.add_frames(self.frame_index-1)
+        let frame = self.sound
+                    .add_frames(self.frame_index-1)
                     .unwrap_or(SterioFrame::EQUILIBRIUM);
         return frame[0] + frame[1]
     }
