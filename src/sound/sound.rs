@@ -33,10 +33,7 @@ impl Sound {
 }
 
 
-impl<T> Sound<T> where
-    T: dasp::frame::Frame,
-    f32: dasp::sample::FromSample<<T as dasp::Frame>::Sample> {
-
+impl Sound {
     pub fn append_signal(&mut self, signal: &mut dyn Signal<Frame=T>) -> () {
         &mut self.signals.push(SterioSignal::from(signal));
     }
