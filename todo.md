@@ -1,5 +1,6 @@
 ### Tasks
 - [ ] Append (merge) sounds
+- [ ] Multiframe struct
 - [ ] Basic generators (sine, triangle, sawtooth, square)
 - [ ] Playback module
 

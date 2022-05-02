@@ -54,6 +54,10 @@ impl Sound {
             self.signals.insert(0, ns);
         }
     }
+
+    pub fn append_signal(&mut self, signal: SterioSignal) -> () {
+        self.signals.insert(0, signal);
+    }
 }
 
 impl IntoIterator for Sound {
@@ -79,6 +83,10 @@ impl Iterator for MonoSoundIterator {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.frame_index += 1;
+        if self.frame_index >= self.sound.get_num_frames() {
+            return None;
+        }
+        println!("frame: {}", self.sound.get_raw_mono_frame(self.frame_index-1).unwrap_or(0.0));
         self.sound.get_raw_mono_frame(self.frame_index - 1)
     }
 

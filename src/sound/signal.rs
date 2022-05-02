@@ -4,6 +4,7 @@ use dasp_signal::Signal;
 use dasp_sample::{Sample};
 
 use super::frame::*;
+use super::generator::SignalGenerator;
 
 #[derive(Clone)]
 pub struct SterioSignal {
@@ -14,6 +15,18 @@ impl SterioSignal {
     pub fn new() -> SterioSignal {
         SterioSignal {
             frames: Vec::new()
+        }
+    }
+
+    pub fn from_generator<T: SignalGenerator>(gen: T, num_frames: usize) -> SterioSignal {
+        SterioSignal {
+            frames: {
+                let mut n_frames: Vec<SterioFrame> = Vec::new();
+                for i in 0..num_frames {
+                    n_frames.push(gen.generate_frame(i));
+                }
+                n_frames
+            }
         }
     }
 

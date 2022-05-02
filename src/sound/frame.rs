@@ -13,6 +13,12 @@ impl SterioFrame {
         Self::EQUILIBRIUM
     }
 
+    pub fn from_vals(a: f32, b: f32) -> Self {
+        Self {
+            data: [a, b]
+        }
+    }
+
     pub fn get_channel(&self, idx: usize) -> Option<&f32> {
         if idx <= 1 {
             Some(&self.data[idx])
