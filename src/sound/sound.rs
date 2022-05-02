@@ -30,12 +30,30 @@ impl Sound {
         }
         Some(mono_frame)
     }
-}
 
+    pub fn get_num_signals(&self) -> usize {
+        signals.size()
+    }
 
-impl Sound {
-    pub fn append_signal(&mut self, signal: &mut dyn Signal<Frame=T>) -> () {
-        &mut self.signals.push(SterioSignal::from(signal));
+    pub fn get_num_frames(&self) -> usize {
+        let len: usize = 0;
+        for signal in &self.signals {
+            if signal.get_num_frames() > len {
+                len = signal.get_num_frames()
+            }
+        }
+        len
+    }
+
+    pub fn append_sound(&mut self, sound: &Sound) -> () {
+        let new_signals : Vec<SterioSignal> = Vec::new();
+        for i in 0..sound.get_num_frames() {
+            for j in 0..sound.get_num_signals() {
+                //new_signals[j][i] = sound.get_sound_frame(i)[j];
+                new_signals[j][i] = 0.0;
+            }
+        }
+        signals.insert(0, new_signals.into_iter());
     }
 }
 

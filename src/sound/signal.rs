@@ -20,6 +20,10 @@ impl SterioSignal {
     pub fn get_raw_frame(&self, idx: usize) -> Option<&SterioFrame> {
         self.frames.get(idx).clone()
     }
+
+    pub fn get_num_frames(&self) -> usize {
+        self.frames.len()
+    }
 }
 
 impl<T: dasp::Frame> From<&mut dyn Signal<Frame=T>> for SterioSignal 
