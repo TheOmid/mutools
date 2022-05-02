@@ -1,5 +1,3 @@
-#![feature(fn_traits)]
-
 mod frame;
 mod sample;
 mod signal;

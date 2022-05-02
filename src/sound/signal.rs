@@ -40,7 +40,7 @@ impl<T: dasp::Frame> From<&mut dyn Signal<Frame=T>> for SterioSignal
             match from_signal.is_exhausted() {
                 true => break,
                 false => {
-                    let mono_frame : f32 = 0.0;
+                    let mut mono_frame : f32 = 0.0;
                     for sample in frame.channels() {
                         mono_frame += sample.to_sample::<f32>();
                     }

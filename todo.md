@@ -6,3 +6,5 @@
 ### Backlog
 - [ ] Synth module
 - [ ] Sampler module
+- [ ] Pitch shifting
+- [ ] Map sounds to midi input

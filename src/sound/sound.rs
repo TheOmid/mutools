@@ -31,20 +31,16 @@ impl Sound {
         Some(mono_frame)
     }
 
+    pub fn get_signals(&self) -> Vec<SterioSignal> {
+        self.signals.clone()
+    }
+
     pub fn get_num_signals(&self) -> usize {
         self.signals.len()
     }
 
-    pub fn get_mono_signals_at_frame(&self) -> Vec<f32> {
-        let vals : Vec<f32> = Vec::with_capacity(self.get_num_signals());
-        for i in 0..self.get_num_signals() {
-            vals[i] = self.signals[i].get_raw_mono_frame();
-        }
-        vals
-    }
-
     pub fn get_num_frames(&self) -> usize {
-        let len: usize = 0;
+        let mut len: usize = 0;
         for signal in &self.signals {
             if signal.get_num_frames() > len {
                 len = signal.get_num_frames()
@@ -54,16 +50,9 @@ impl Sound {
     }
 
     pub fn append_sound(&mut self, sound: &Sound) -> () {
-        let new_signals : Vec<SterioSignal> = Vec::new();
-        for i in 0..sound.get_num_signals() {
-            for j in 0..sound.get_num_frames() {
-                //new_signals[j][i] = sound.get_sound_frame(i)[j];
-                new_signals[i].push_frame(
-                    sound.get_sterio_frame(j)
-                );
-            }
+        for ns in sound.get_signals().into_iter() {
+            self.signals.insert(0, ns);
         }
-        signals.insert(0, new_signals.into_iter());
     }
 }
 
@@ -121,6 +110,7 @@ pub struct InterleavedSoundIterator {
     sound: Sound
 }
 
+/*
 impl Iterator for InterleavedSoundIterator {
     type Item = f32;
 
@@ -134,7 +124,7 @@ impl Iterator for InterleavedSoundIterator {
     }
 }
 
-impl rodio::Source for MonoSoundIterator {
+impl rodio::Source for InterleavedSoundIterator {
     fn current_frame_len(&self) -> Option<usize> {
         None
     }
@@ -151,3 +141,4 @@ impl rodio::Source for MonoSoundIterator {
         Some(Duration::from_secs(5))
     }
 }
+*/
