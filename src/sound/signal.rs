@@ -24,6 +24,10 @@ impl SterioSignal {
     pub fn get_num_frames(&self) -> usize {
         self.frames.len()
     }
+
+    pub fn push_sterio_frame(&mut self, frame: SterioFrame) -> () {
+        self.frames.push(frame);
+    }
 }
 
 impl<T: dasp::Frame> From<&mut dyn Signal<Frame=T>> for SterioSignal 
