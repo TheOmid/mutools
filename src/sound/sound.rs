@@ -86,7 +86,7 @@ impl Iterator for MonoSoundIterator {
         if self.frame_index >= self.sound.get_num_frames() {
             return None;
         }
-        println!("frame: {}", self.sound.get_raw_mono_frame(self.frame_index-1).unwrap_or(0.0));
+        //println!("frame: {}", self.sound.get_raw_mono_frame(self.frame_index-1).unwrap_or(0.0));
         self.sound.get_raw_mono_frame(self.frame_index - 1)
     }
 
