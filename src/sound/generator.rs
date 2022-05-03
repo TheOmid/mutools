@@ -17,7 +17,7 @@ impl SineWaveGenerator {
         Self {
             frequency,
             amplitude,
-            sample_rate
+            sample_rate,
         }
     }
 
@@ -48,7 +48,7 @@ impl SquareWaveGenerator {
             frequency,
             amplitude,
             num_components,
-            sample_rate
+            sample_rate,
         }
     }
 
@@ -57,7 +57,7 @@ impl SquareWaveGenerator {
         let i = idx as f32;
         let mut res = 0.0;
         for n in 0..self.num_components {
-            let b = (n*2 + 1) as f32;
+            let b = (n * 2 + 1) as f32;
             let t = 2.0 * std::f32::consts::PI / sample_rate * self.frequency;
             res += self.amplitude * (4.0 / std::f32::consts::PI) * (1.0 / b) * (b * t * i).sin()
         }
@@ -85,7 +85,7 @@ impl TriangleWaveGenerator {
             frequency,
             amplitude,
             num_components,
-            sample_rate
+            sample_rate,
         }
     }
 
@@ -98,7 +98,7 @@ impl TriangleWaveGenerator {
             let t = 2.0 * std::f32::consts::PI / sample_rate * self.frequency;
             res += (1.0 / std::f32::consts::PI) * (1.0 / b) * (b * t * i).sin()
         }
-        self.amplitude * (1.0/2.0 - res)
+        self.amplitude * (1.0 / 2.0 - res)
     }
 }
 

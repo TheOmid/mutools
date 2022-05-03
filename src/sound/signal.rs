@@ -1,7 +1,7 @@
 use dasp::frame::*;
 use dasp_signal::Signal;
 
-use dasp_sample::{Sample};
+use dasp_sample::Sample;
 
 use super::frame::*;
 use super::generator::SignalGenerator;
@@ -13,9 +13,7 @@ pub struct SterioSignal {
 
 impl SterioSignal {
     pub fn new() -> SterioSignal {
-        SterioSignal {
-            frames: Vec::new()
-        }
+        SterioSignal { frames: Vec::new() }
     }
 
     pub fn from_generator<T: SignalGenerator>(gen: T, num_frames: usize) -> SterioSignal {
@@ -26,7 +24,7 @@ impl SterioSignal {
                     n_frames.push(gen.generate_frame(i));
                 }
                 n_frames
-            }
+            },
         }
     }
 
@@ -43,21 +41,24 @@ impl SterioSignal {
     }
 }
 
-impl<T: dasp::Frame> From<&mut dyn Signal<Frame=T>> for SterioSignal 
-    where f32: dasp::sample::FromSample<<T as dasp::Frame>::Sample> {
-
-    fn from(from_signal: &mut dyn Signal<Frame=T>) -> Self {
+impl<T: dasp::Frame> From<&mut dyn Signal<Frame = T>> for SterioSignal
+where
+    f32: dasp::sample::FromSample<<T as dasp::Frame>::Sample>,
+{
+    fn from(from_signal: &mut dyn Signal<Frame = T>) -> Self {
         let mut sterio_signal = SterioSignal::new();
         loop {
-            let frame : T = from_signal.next();
+            let frame: T = from_signal.next();
             match from_signal.is_exhausted() {
                 true => break,
                 false => {
-                    let mut mono_frame : f32 = 0.0;
+                    let mut mono_frame: f32 = 0.0;
                     for sample in frame.channels() {
                         mono_frame += sample.to_sample::<f32>();
                     }
-                    sterio_signal.frames.push(SterioFrame::from([mono_frame, mono_frame]));
+                    sterio_signal
+                        .frames
+                        .push(SterioFrame::from([mono_frame, mono_frame]));
                 }
             };
         }

@@ -1,18 +1,18 @@
-use std::time::Duration;
 use dasp_signal::Signal;
+use std::time::Duration;
 
-use super::signal::SterioSignal;
 use super::frame::SterioFrame;
+use super::signal::SterioSignal;
 
 #[derive(Clone)]
 pub struct Sound {
-    signals: Vec<SterioSignal>
+    signals: Vec<SterioSignal>,
 }
 
 impl Sound {
     pub fn new() -> Self {
         Sound {
-            signals: Vec::<SterioSignal>::new()
+            signals: Vec::<SterioSignal>::new(),
         }
     }
 
@@ -67,15 +67,14 @@ impl IntoIterator for Sound {
     fn into_iter(self) -> Self::IntoIter {
         MonoSoundIterator {
             frame_index: 0,
-            sound: self.clone()
+            sound: self.clone(),
         }
     }
-
 }
 
 pub struct MonoSoundIterator {
     frame_index: usize,
-    sound: Sound
+    sound: Sound,
 }
 
 impl Iterator for MonoSoundIterator {
@@ -89,11 +88,9 @@ impl Iterator for MonoSoundIterator {
         //println!("frame: {}", self.sound.get_raw_mono_frame(self.frame_index-1).unwrap_or(0.0));
         self.sound.get_raw_mono_frame(self.frame_index - 1)
     }
-
 }
 
 impl rodio::Source for MonoSoundIterator {
-
     fn current_frame_len(&self) -> Option<usize> {
         None
     }
@@ -109,13 +106,12 @@ impl rodio::Source for MonoSoundIterator {
     fn total_duration(&self) -> Option<Duration> {
         Some(Duration::from_secs(5))
     }
-
 }
 
 pub struct InterleavedSoundIterator {
     frame_index: usize,
     signal_index: usize,
-    sound: Sound
+    sound: Sound,
 }
 
 /*

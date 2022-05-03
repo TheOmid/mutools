@@ -14,9 +14,7 @@ impl SterioFrame {
     }
 
     pub fn from_vals(a: f32, b: f32) -> Self {
-        Self {
-            data: [a, b]
-        }
+        Self { data: [a, b] }
     }
 
     pub fn get_channel(&self, idx: usize) -> Option<&f32> {
@@ -42,9 +40,7 @@ impl SterioFrame {
 
 impl From<[f32; 2]> for SterioFrame {
     fn from(data: [f32; 2]) -> Self {
-        Self {
-            data
-        }
+        Self { data }
     }
 }
 
