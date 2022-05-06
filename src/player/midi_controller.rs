@@ -3,6 +3,15 @@ use std::error::Error;
 
 use midir::{MidiInput, Ignore};
 
-struct MidiController {
+struct MidiDevice {
+}
 
+struct MidiController {
+}
+
+impl MidiController {
+    pub fn new(device: MidiDevice) -> MidiController {
+        Self {
+        }
+    }
 }
