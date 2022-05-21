@@ -17,7 +17,6 @@ use tarpc::{
 };
 use tokio::time;
 
-
 #[derive(Clone)]
 pub struct HelloServer(pub SocketAddr);
 

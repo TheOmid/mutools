@@ -1,9 +1,8 @@
-
-mod sound;
 mod player;
-mod synthesizer;
 mod rpc_core;
 mod server_core;
+mod sound;
+mod synthesizer;
 
 use rpc_core::*;
 use server_core::*;
