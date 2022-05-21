@@ -1,9 +1,9 @@
 use dasp_ring_buffer as ring_buffer;
 use dasp_signal::{self as signal, Signal};
+use mutools::player::SoundPlayer;
 use mutools::sound::{
     SineWaveGenerator, Sound, SquareWaveGenerator, SterioSignal, TriangleWaveGenerator,
 };
-use mutools::player::SoundPlayer;
 use rodio::{source::Source, Decoder, OutputStream};
 
 fn generate_sounds() {

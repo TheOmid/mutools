@@ -1,14 +1,14 @@
-use rodio::{source::Source, Sink, OutputStream, OutputStreamHandle};
-use super::sound::{Sound};
+use super::sound::Sound;
+use rodio::{source::Source, OutputStream, OutputStreamHandle, Sink};
 
 pub struct PlaybackHandle {
-    sink: Sink
+    sink: Sink,
 }
 
 impl PlaybackHandle {
     pub fn new(stream_handle: &OutputStreamHandle) -> Self {
         Self {
-            sink: Sink::try_new(&stream_handle).unwrap()
+            sink: Sink::try_new(&stream_handle).unwrap(),
         }
     }
 
@@ -19,7 +19,6 @@ impl PlaybackHandle {
     pub fn sleep_until_end(&self) -> () {
         self.sink.sleep_until_end();
     }
-
 }
 
 pub struct SoundPlayer {
@@ -42,4 +41,3 @@ impl SoundPlayer {
         playback_handle
     }
 }
-
