@@ -3,8 +3,16 @@
   windows_subsystem = "windows"
 )]
 
+    
+#[tauri::command]
+fn DispatchPing() -> String {
+    println!("I was invoked from JS!");
+    "HELLO FROM RUST".into()
+}
+
 fn main() {
   tauri::Builder::default()
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+	.invoke_handler(tauri::generate_handler![DispatchPing])
+	.run(tauri::generate_context!())
+	.expect("error while running tauri application");
 }
