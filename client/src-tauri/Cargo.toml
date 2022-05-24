@@ -17,7 +17,9 @@ tauri-build = { version = "1.0.0-rc.9", features = [] }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["macros"] }
 tauri = { version = "1.0.0-rc.11", features = ["api-all"] }
+futures = "0.3"
 
 mutools_rpc = { path = "../../rpc" }
 
