@@ -10,6 +10,17 @@ use tarpc::{
 // Mutools RPC interface
 #[tarpc::service]
 pub trait World {
-    /// Returns a greeting for name.
-    async fn hello(name: String) -> String;
+
+    // Misc API
+    async fn get_version() -> String;
+
+    // Project API
+    async fn get_num_project_descriptors() -> usize; 
+
+    // Transform API
+
+
+    // Playback API
+    
+
 }

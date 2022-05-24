@@ -2,6 +2,7 @@
 
 # Added by cargo
 /target
+/rpc/target
 
 # Added by cargo
 #
