@@ -15,7 +15,7 @@ fn main() -> () {
     let flags = Flags::parse();
     println!("Mutools server initializing...");
 
-    let rpc_server = mutools_rpc::server::MutoolsRPCServer::new(flags.port);
+    let rpc_server = mutools_rpc::server::MutoolsRpcServer::new(flags.port);
     rpc_server.serve();
     
 }
