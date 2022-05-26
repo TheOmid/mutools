@@ -37,7 +37,7 @@ pub trait World {
     // Project API
     async fn get_num_project_descriptors() -> usize;
 
-    //async fn get_project_descriptors() -> Vec<ProjectDescriptor>;
+    async fn get_project_descriptors() -> Vec<ProjectDescriptor>;
     //async fn get_sound_descriptors(desc : ProjectDescriptor) -> Vec<SoundDescriptor>;
     //async fn get_buffer_descriptors(desc : SoundDescriptor) -> Vec<BufferDescriptor>;
 
@@ -45,6 +45,12 @@ pub trait World {
 
 
     // Playback API
-    
+}
+
+pub trait MutoolsRPCInterface {
+
+    fn get_version(&self, _ : context::Context) -> String;
+    fn get_num_project_descriptors(&self, _ : context::Context) -> usize;
+    fn get_project_descriptors(&self, _ : context::Context) -> Vec<ProjectDescriptor>;
 
 }

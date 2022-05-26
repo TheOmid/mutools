@@ -25,17 +25,23 @@ impl World for MutoolsRpcHandler {
     async fn get_num_project_descriptors(self, _: context::Context) -> usize {
 	3
     }
+
+    async fn get_project_descriptors(self, _ : context::Context) -> Vec<ProjectDescriptor> {
+	vec![].into()
+    }
 }
 
 pub struct MutoolsRpcServer {
     port: u16,
+    handler: Box<dyn MutoolsRPCInterface>,
 }
 
 impl MutoolsRpcServer {
 
-    pub fn new(port: u16) -> Self {
+    pub fn new(port: u16, handler: Box<dyn MutoolsRPCInterface>) -> Self {
 	Self {
-	    port
+	    port,
+	    handler,
 	}
     }
     
