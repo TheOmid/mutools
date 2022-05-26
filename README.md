@@ -1,3 +1,3 @@
 # mutools
 
-A high-level music production toolkit.
+Digital Audio Sampler and Synthesizer.
