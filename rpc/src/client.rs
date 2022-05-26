@@ -9,7 +9,6 @@ pub struct MutoolsRpcClient {
 
 impl MutoolsRpcClient {
 
-    #[tokio::main(flavor="current_thread")]
     pub async fn new(port: u16) -> Result<Self, ()> {
 	let server_addr = (std::net::IpAddr::V6(std::net::Ipv6Addr::LOCALHOST), port);
 	let transport = tarpc::serde_transport::tcp::connect(server_addr, tokio_serde::formats::Json::default).await;

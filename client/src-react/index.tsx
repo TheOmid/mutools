@@ -1,7 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import { StartupView } from './startup';
+
 ReactDOM.render(
-    <h1>HELLO TAURI!</h1>,
+    <StartupView />,
     document.getElementById('app-root'),
 )
