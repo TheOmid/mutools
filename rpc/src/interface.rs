@@ -7,6 +7,26 @@ use tarpc::{
     server::{self, incoming::Incoming, Channel},
 };
 
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProjectDescriptor {
+    id: i32,
+    name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SoundDescriptor {
+    id: i32,
+    name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BufferDescriptor {
+    id: i32,
+    name: String,
+}
+
 // Mutools RPC interface
 #[tarpc::service]
 pub trait World {
@@ -15,7 +35,11 @@ pub trait World {
     async fn get_version() -> String;
 
     // Project API
-    async fn get_num_project_descriptors() -> usize; 
+    async fn get_num_project_descriptors() -> usize;
+
+    //async fn get_project_descriptors() -> Vec<ProjectDescriptor>;
+    //async fn get_sound_descriptors(desc : ProjectDescriptor) -> Vec<SoundDescriptor>;
+    //async fn get_buffer_descriptors(desc : SoundDescriptor) -> Vec<BufferDescriptor>;
 
     // Transform API
 
