@@ -16,30 +16,33 @@ use tokio::time;
 #[derive(Clone)]
 struct MutoolsRpcDispatcher {
     pub socket_address: SocketAddr,
-    pub handler: std::sync::Arc<dyn MutoolsRpcHandler>,
+    pub handler: std::sync::Arc<std::sync::Mutex<dyn MutoolsRpcHandler>>,
 }
-
 
 #[tarpc::server]
 impl World for MutoolsRpcDispatcher {
     async fn get_version(self, c: context::Context) -> String {
-	self.handler.get_version(c)
+	self.handler.lock().unwrap().get_version(c)
     }
 
-    async fn get_num_project_descriptors(self, _: context::Context) -> usize {
-	3
+    async fn init_transaction(self, c : context::Context) -> TransactionDescriptor {
+	self.handler.lock().unwrap().init_transaction(c)
     }
 
-    async fn get_project_descriptors(self, _ : context::Context) -> Vec<ProjectDescriptor> {
-	vec![].into()
+    async fn commit_transaction(self, c : context::Context, transaction: TransactionDescriptor) -> () {
+	self.handler.lock().unwrap().commit_transaction(c, transaction)
+    }
+    
+    async fn get_project_descriptors(self, c : context::Context) -> Vec<ProjectDescriptor> {
+	self.handler.lock().unwrap().get_project_descriptors(c)
     }
 
     async fn get_sound_descriptors(self, c: context::Context, project: ProjectDescriptor) -> Vec<SoundDescriptor> {
-	vec![].into()	
+	self.handler.lock().unwrap().get_sound_descriptors(c, project)
     }
     
     async fn get_buffer_descriptors(self, c: context::Context, sound: SoundDescriptor) -> Vec<BufferDescriptor> {
-	vec![].into()	
+	self.handler.lock().unwrap().get_buffer_descriptors(c, sound)
     }
 }
 
@@ -56,7 +59,7 @@ impl MutoolsRpcServer {
     }
     
     #[tokio::main(flavor = "current_thread")]
-    pub async fn serve(self, handler: std::sync::Arc<dyn MutoolsRpcHandler>) -> anyhow::Result<()> {
+    pub async fn serve(self, handler: std::sync::Arc<std::sync::Mutex<dyn MutoolsRpcHandler>>) -> anyhow::Result<()> {
 
 	let server_addr = (IpAddr::V6(Ipv6Addr::LOCALHOST), self.port);
 
