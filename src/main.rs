@@ -1,6 +1,7 @@
 pub mod player;
 pub mod sound;
 pub mod synthesizer;
+pub mod server;
 
 use clap::Parser;
 
@@ -13,9 +14,14 @@ struct Flags {
 
 fn main() -> () {
     let flags = Flags::parse();
-    println!("Mutools server initializing...");
 
-    let rpc_server = mutools_rpc::server::MutoolsRpcServer::new(flags.port);
-    rpc_server.serve();
+    println!("Mutools server initializing...");
+    let mutools_server = std::sync::Arc::new(
+	std::sync::Mutex::new(
+	    server::MutoolsServer::new()
+	)
+    );
     
+    let rpc_server = mutools_rpc::server::MutoolsRpcServer::new(flags.port);
+    rpc_server.serve(mutools_server);
 }

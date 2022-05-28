@@ -32,6 +32,14 @@ pub struct TransactionDescriptor {
     id: i32
 }
 
+impl TransactionDescriptor {
+    pub fn new() -> Self {
+	Self {
+	    id: 123
+	}
+    }
+}
+
 // Mutools RPC interface
 #[tarpc::service]
 pub trait World {
@@ -68,6 +76,8 @@ pub trait MutoolsRpcHandlerBase {
 }
 
 pub trait MutoolsRpcHandler: MutoolsRpcHandlerBase + Send + Sync {}
+
+impl<T: MutoolsRpcHandlerBase + Send + Sync> MutoolsRpcHandler for T {}
 
 pub struct MutoolsRpcHandlerProxy {
     handler: std::sync::Arc<std::sync::Mutex<Box<dyn MutoolsRpcHandler>>>
