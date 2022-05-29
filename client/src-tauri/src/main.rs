@@ -12,12 +12,13 @@ async fn ping_rpc() {
 	    _ => panic!("Mutools Client could not make contact with server!"),
 	    }
     };
-    
-    let nd = rpc_client.get_client().get_num_project_descriptors(mutools_rpc::get_current_context()).await;
+    /*
+    let nd = rpc_client.get_client().get_project_descriptors(mutools_rpc::get_current_context()).await;
     match nd {
 	Ok(n) => println!("Got: {}", n),
 	Err(_) => println!("Rpc returned an error"),
     }
+    */
 }
 
 fn main() {    
