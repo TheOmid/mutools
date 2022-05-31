@@ -3,21 +3,34 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
 
-export const BaseViewGrid = ({ Top: any, Middle: any, Bottom: any }) => {
+export const BaseViewGrid = (props: any) => {
+    const { Top, Middle, Bottom } = props;
+    
     return (
-	<Box sx={{ flexGrow: 1 }}>
-	  <Grid container spacing={2}>
+	<Box sx={{ flexGrow: 1, height: '100vh', width: '100vw' }}>
+	  <Grid container
+                spacing={1}
+                direction="column"
+                justifyContent="space-evenly"
+                alignItems="stretch"
+          >
 
-            <Grid item xs={8}>
-              <Top />
+            <Grid item xs={12}>
+              <Box sx={{ height: '2vh' }}>
+                { Top }
+              </Box>
             </Grid>
 
-            <Grid item xs={4}>
-              <Middle />
+            <Grid item xs={12}>
+              <Box sx={{ height: '38vh' }}>
+                { Middle }
+              </Box>
             </Grid>
 
-            <Grid item xs={4}>
-              <Bottom />
+            <Grid item xs={12}>
+              <Box sx={{ height: '60vh' }}>
+                { Bottom }
+              </Box>
             </Grid>
 
 	  </Grid>
@@ -32,24 +45,27 @@ export const TopbarViewGrid = (props: any) => {
         <Box sx={{ flexGrow: 1 }}>
           <Grid container>
 
-            <Grid item xs={2}>
-              <C1 />
+            <Grid item xs={1}>
+              { C1 }
             </Grid>
 
-            <Grid item xs={2}>
-              <C2 />
+            <Grid item xs={1}>
+              { C2 }
             </Grid>
 
-            <Grid item xs={2}>
-              <C3 />
+            <Grid item xs={1}>
+              { C3 }
             </Grid>
 
-            <Grid item xs={2}>
-              <C4 />
+            <Grid item xs={1}>
+              { C4 }
+            </Grid>
+
+            <Grid item xs={5}>
             </Grid>
             
-            <Grid item xs={2}>
-              <C5 />
+            <Grid item xs={3}>
+              { C5 }
             </Grid>            
             
           </Grid>

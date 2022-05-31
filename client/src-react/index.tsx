@@ -1,9 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
-import { StartupView } from './startup';
+import { AppView } from './app';
 
 ReactDOM.render(
-    <StartupView />,
+    <AppView />,
     document.getElementById('app-root'),
-)
+);
