@@ -1,9 +1,9 @@
 import React from 'react'
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 
-export const BaseViewGrid = (props) => {
-    const { Top, Middle, Bottom } = props;
-    
+
+export const BaseViewGrid = ({ Top: any, Middle: any, Bottom: any }) => {
     return (
 	<Box sx={{ flexGrow: 1 }}>
 	  <Grid container spacing={2}>
@@ -25,7 +25,7 @@ export const BaseViewGrid = (props) => {
     );
 };
 
-export const TopbarViewGrid = (props) => {
+export const TopbarViewGrid = (props: any) => {
     const { C1, C2, C3, C4, C5 } = props;
 
     return ( 

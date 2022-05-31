@@ -1,6 +1,8 @@
 import React from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 
+import { BaseViewGrid, TopbarViewGrid } from './layout';
+
 function invoke_ping_rpc() {
     invoke('ping_rpc');
 }
@@ -8,7 +10,7 @@ function invoke_ping_rpc() {
 export const StartupView = () => {
     return (
 	<div>
-	    <button onClick={invoke_ping_rpc}>Send RPC!</button>
+          <BaseViewGrid Top={<h1>123</h1>} Middle={(1)} Bottom={(2)} />
 	</div>
     );
 }
