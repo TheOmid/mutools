@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 
 
 export const BaseViewGrid = (props: any) => {
-    const { Top, Middle, Bottom } = props;
+    const { Navbar, Toolbar, Dashboard } = props;
     
     return (
 	<Box sx={{ flexGrow: 1, height: '100vh', width: '100vw' }}>
@@ -16,20 +16,20 @@ export const BaseViewGrid = (props: any) => {
           >
 
             <Grid item xs={12}>
-              <Box sx={{ height: '2vh' }}>
-                { Top }
+              <Box sx={{ height: '4vh' }}>
+                { Navbar }
               </Box>
             </Grid>
 
             <Grid item xs={12}>
               <Box sx={{ height: '38vh' }}>
-                { Middle }
+                { Toolbar }
               </Box>
             </Grid>
 
             <Grid item xs={12}>
               <Box sx={{ height: '60vh' }}>
-                { Bottom }
+                { Dashboard }
               </Box>
             </Grid>
 
@@ -38,7 +38,7 @@ export const BaseViewGrid = (props: any) => {
     );
 };
 
-export const TopbarViewGrid = (props: any) => {
+export const NavbarLayout = (props: any) => {
     const { C1, C2, C3, C4, C5 } = props;
 
     return ( 
@@ -49,6 +49,9 @@ export const TopbarViewGrid = (props: any) => {
               { C1 }
             </Grid>
 
+            <Grid item xs={1}>
+            </Grid>
+            
             <Grid item xs={1}>
               { C2 }
             </Grid>
@@ -61,7 +64,7 @@ export const TopbarViewGrid = (props: any) => {
               { C4 }
             </Grid>
 
-            <Grid item xs={5}>
+            <Grid item xs={4}>
             </Grid>
             
             <Grid item xs={3}>
