@@ -55,10 +55,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 1920,
         "resizable": true,
         "title": "Mutools",
-        "width": 800
+        "width": 1080
       }
     ]
   }
