@@ -8,8 +8,7 @@ pub struct Project {
 
 // Raw serializable type representing buffers, metadata, etc, contained in a project
 #[derive(serde::Serialize, serde::Deserialize)]
-pub struct ProjectData {
-}
+pub struct ProjectData {}
 
 impl ProjectData {
     pub fn load_from_file(file: std::fs::File) -> Result<ProjectData, crate::errors::DataError> {
@@ -20,24 +19,21 @@ impl ProjectData {
                     Err(_) => Err(crate::errors::DataError::new()),
                     Ok(data) => Ok(data),
                 }
-            },
+            }
             _ => Err(crate::errors::DataError::new()),
         }
     }
 
-   pub fn save_to_file(self, file: std::fs::File) -> Result<(), crate::errors::DataError> {
-       let bson_res = bson::to_bson(&self);
+    pub fn save_to_file(self, file: std::fs::File) -> Result<(), crate::errors::DataError> {
+        let bson_res = bson::to_bson(&self);
         match bson_res {
-            Ok(bson::Bson::Document(bson_data)) => {
-                match bson_data.to_writer(file) {
-                    Ok(_) => Ok(()),
-                    _ => Err(crate::errors::DataError::new()),
-                }
+            Ok(bson::Bson::Document(bson_data)) => match bson_data.to_writer(file) {
+                Ok(_) => Ok(()),
+                _ => Err(crate::errors::DataError::new()),
             },
             _ => Err(crate::errors::DataError::new()),
         }
     }
-
 }
 
 impl Project {
