@@ -4,7 +4,7 @@ use std::time::Duration;
 use super::frame::SterioFrame;
 use super::signal::SterioSignal;
 
-#[derive(Clone)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Sound {
     signals: Vec<SterioSignal>,
 }

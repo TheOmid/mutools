@@ -4,16 +4,36 @@ use crate::*;
 // Contains metadata like the project data file's location, and manages loading/saving of project data.
 pub struct Project {
     project_data: ProjectData,
-    data_file_path: std::string::String,
+    data_file_path: Option<std::string::String>,
+}
+
+impl Project {
+    pub fn new() -> Self {
+        Self {
+           project_data: ProjectData::new(),
+           data_file_path: None,
+        }
+    }
+
+    pub fn get_project_data(&self) -> &ProjectData {
+        &self.project_data
+    }
 }
 
 // Raw serializable project type representing the set of sounds in a project, and any project metadata.
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ProjectData {
-    sound_buffers: std::collections::HashSet<i32>,
+    sounds: Vec<sound::Sound>,
 }
 
 impl ProjectData {
+
+    pub fn new() -> Self {
+        Self {
+            sounds: Vec::<sound::Sound>::new(),
+        }
+    }
+
     pub fn load_from_file(file: std::fs::File) -> Result<ProjectData, errors::DataError> {
         let bson_document_res = bson::Document::from_reader(file);
         match bson_document_res {
@@ -44,13 +64,6 @@ impl ProjectData {
         0
     }
 }
-
-impl Project {
-    pub fn get_project_data(&self) -> &ProjectData {
-        &self.project_data
-    }
-}
-
 
 #[cfg(test)]
 mod tests {

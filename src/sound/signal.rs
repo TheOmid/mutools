@@ -1,4 +1,4 @@
-use dasp::frame::*;
+use dasp::Frame;
 use dasp_signal::Signal;
 
 use dasp_sample::Sample;
@@ -6,7 +6,7 @@ use dasp_sample::Sample;
 use super::frame::*;
 use super::generator::SignalGenerator;
 
-#[derive(Clone)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct SterioSignal {
     frames: Vec<SterioFrame>,
 }

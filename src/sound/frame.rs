@@ -1,16 +1,12 @@
-use dasp::*;
-use std::{borrow::BorrowMut, iter::FromIterator, slice::Iter, slice::SliceIndex};
 
-use super::sample::*;
-
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct SterioFrame {
     pub data: [f32; 2],
 }
 
 impl SterioFrame {
     pub fn new() -> Self {
-        Self::EQUILIBRIUM
+        <Self as dasp::frame::Frame>::EQUILIBRIUM
     }
 
     pub fn from_vals(a: f32, b: f32) -> Self {
@@ -118,17 +114,17 @@ impl dasp::frame::Frame for SterioFrame {
 
     fn map<F, M>(self, map_fn: M) -> F
     where
-        F: Frame<NumChannels = Self::NumChannels>,
-        M: FnMut(Self::Sample) -> <F as Frame>::Sample,
+        F: dasp::frame::Frame<NumChannels = Self::NumChannels>,
+        M: FnMut(Self::Sample) -> <F as dasp::frame::Frame>::Sample,
     {
         F::from_samples(&mut self.channels().map(map_fn)).unwrap_or(F::EQUILIBRIUM)
     }
 
     fn zip_map<O, F, M>(self, other: O, zip_map_fn: M) -> F
     where
-        F: Frame<NumChannels = Self::NumChannels>,
-        M: FnMut(Self::Sample, <O as Frame>::Sample) -> <F as Frame>::Sample,
-        O: Frame<NumChannels = Self::NumChannels>,
+        F: dasp::frame::Frame<NumChannels = Self::NumChannels>,
+        M: FnMut(Self::Sample, <O as dasp::frame::Frame>::Sample) -> <F as dasp::frame::Frame>::Sample,
+        O: dasp::frame::Frame<NumChannels = Self::NumChannels>,
     {
         let f = &mut M::from(zip_map_fn);
         let samples = &mut self.channels().zip(other.channels()).map(|(a, b)| f(a, b));
