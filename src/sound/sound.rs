@@ -1,8 +1,6 @@
-use dasp_signal::Signal;
 use std::time::Duration;
 
-use super::frame::SterioFrame;
-use super::signal::SterioSignal;
+use crate::signal::SterioSignal;
 
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Sound {
